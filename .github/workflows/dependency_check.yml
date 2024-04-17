@@ -10,33 +10,18 @@ on:
 
 jobs:
   dependency-check:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Switch to a Linux runner for Docker compatibility
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '11'
+    - name: Build Docker image
+      run: docker build -t dependency-check-image .
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '6.0'
-        
-        
-    - name: Download Dependency-Check
+    - name: Run Dependency-Check in Docker
       run: |
-        Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
-        Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
-    
-    - name: Run Dependency-Check
-      run: |
-        .\dependency-check\bin\dependency-check.bat --noupdate --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
+        docker run --rm -v "${{ github.workspace }}:/src" dependency-check-image --noupdate --project "PayWiseBackend" --scan "/src" --out "/src/dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
 
-    
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
       run: |
@@ -45,13 +30,13 @@ jobs:
         foreach ($dependency in $report.dependencies) {
             if ($dependency.vulnerabilities) {
                 foreach ($vuln in $dependency.vulnerabilities) {
-                    $pkgId = $dependency.fileName  # Assuming the package ID is stored in fileName for each dependency
+                    $pkgId = $dependency.fileName
                     $severity = $vuln.severity
                     Write-Output "Package ID: $pkgId, Severity: $severity"
                 }
             }
         }
-    
+
     - name: Display Vulnerability Details
       if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
       run: |
@@ -60,7 +45,7 @@ jobs:
         foreach ($dependency in $report.dependencies) {
           if ($dependency.packages) {
             foreach ($pkg in $dependency.packages) {
-              $pkgId = $dependencies.relatedDependencies.fileName
+              $pkgId = $dependency.fileName
               if ($dependency.vulnerabilities) {
                 foreach ($vuln in $dependency.vulnerabilities) {
                   $severity = $vuln.severity
@@ -70,7 +55,7 @@ jobs:
             }
           }
         }
-    
+
     - name: Fail if vulnerabilities found
       if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
       run: |
