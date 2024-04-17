@@ -12,4 +12,6 @@ public class RetrieveClienteDTO
     public bool TemCartao { get; set; }
     public int? ContaId { get; set; }
     public string? ContaUrl { get; set; }
+    
+    public string? ContaCode { get; set; }
 }
