@@ -32,17 +32,30 @@ jobs:
     
     - name: Run Dependency-Check
       run: |
-        .\dependency-check\bin\dependency-check.bat --project "MyProject" --scan "./" --out "./dependency-check-report" --format "HTML" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
-
+        .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
+    
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
       run: |
-        if ((Select-String -Path "./dependency-check-report/dependency-check-report.html" -Pattern "No dependencies were identified that have known vulnerabilities").Count -eq 0) {
+        $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
+        if ($report?.dependencies?.vulnerabilities) {
           echo "::set-output name=vulnerable::true"
         } else {
           echo "::set-output name=vulnerable::false"
         }
-
+    
+    - name: Display Vulnerability Details
+      if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
+      run: |
+        $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
+        foreach ($dependency in $report.dependencies) {
+          if ($dependency.vulnerabilities) {
+            foreach ($vuln in $dependency.vulnerabilities) {
+              Write-Output "Package: $($dependency.fileName), Vulnerability: $($vuln.name), Severity: $($vuln.severity)"
+            }
+          }
+        }
+    
     - name: Fail if vulnerabilities found
       if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
       run: |
