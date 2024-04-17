@@ -51,10 +51,17 @@ jobs:
       if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
       run: |
         $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
+        Write-Output "Vulnerability Report:"
         foreach ($dependency in $report.dependencies) {
-          if ($dependency.vulnerabilities) {
-            foreach ($vuln in $dependency.vulnerabilities) {
-              Write-Output "Package: $($dependency.fileName), Vulnerability: $($vuln.name), Severity: $($vuln.severity)"
+          if ($dependency.packages) {
+            foreach ($pkg in $dependency.packages) {
+              $pkgId = $pkg.id
+              if ($dependency.vulnerabilities) {
+                foreach ($vuln in $dependency.vulnerabilities) {
+                  $severity = $vuln.severity
+                  Write-Output "Package ID: $pkgId, Severity: $severity"
+                }
+              }
             }
           }
         }
