@@ -25,15 +25,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0'
-
-    - name: Cache Dependency-Check Data
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.dependency-check/data
-        key: ${{ runner.os }}-dependency-check-${{ hashFiles('**/pom.xml', '**/build.gradle', '**/package.json') }}
-        restore-keys: |
-          ${{ runner.os }}-dependency-check-
         
         
     - name: Download Dependency-Check
@@ -43,7 +34,7 @@ jobs:
     
     - name: Run Dependency-Check
       run: |
-        .\dependency-check\bin\dependency-check.bat --noupdate --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "JSON" --data "~/.dependency-check/data" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
+        .\dependency-check\bin\dependency-check.bat --noupdate --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
 
     
     - name: Check for Vulnerabilities
