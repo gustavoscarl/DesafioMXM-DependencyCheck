@@ -25,10 +25,6 @@ jobs:
       run: |
         Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
         Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
-
-    - name: List directory structure
-      run: |
-        Get-ChildItem -Path "dependency-check" -Recurse
     
     - name: Run Dependency-Check
       run: |
@@ -38,7 +34,14 @@ jobs:
       id: check_vulnerabilities
       run: |
         $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
-        if ($report?.dependencies?.vulnerabilities) {
+        $foundVulnerabilities = $false
+        foreach ($dependency in $report.dependencies) {
+          if ($dependency.vulnerabilities) {
+            $foundVulnerabilities = $true
+            break
+          }
+        }
+        if ($foundVulnerabilities) {
           echo "::set-output name=vulnerable::true"
         } else {
           echo "::set-output name=vulnerable::false"
