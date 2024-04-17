@@ -18,8 +18,9 @@ jobs:
     - name: Setup Java
       uses: actions/setup-java@v2
       with:
+        distribution: 'temurin'
         java-version: '11'
-
+        
     - name: Download Dependency-Check
       run: |
         Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
