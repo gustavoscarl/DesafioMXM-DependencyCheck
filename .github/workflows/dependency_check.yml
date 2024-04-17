@@ -55,7 +55,7 @@ jobs:
         foreach ($dependency in $report.dependencies) {
           if ($dependency.packages) {
             foreach ($pkg in $dependency.packages) {
-              $pkgId = $pkg.id
+              $pkgId = $dependencies.relatedDependencies.fileName
               if ($dependency.vulnerabilities) {
                 foreach ($vuln in $dependency.vulnerabilities) {
                   $severity = $vuln.severity
