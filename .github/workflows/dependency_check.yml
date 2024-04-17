@@ -24,12 +24,11 @@ jobs:
     - name: Download Dependency-Check
       run: |
         Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
-        Expand-Archive -Path "dependency-check.zip" -DestinationPath "dependency-check"
-
-    - name: Run Dependency Check
+        Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
+    
+    - name: Run Dependency-Check
       run: |
-        ./dependency-check/bin/dependency-check.bat --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "HTML" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
-      continue-on-error: true
+        .\dependency-check\dependency-check\bin\dependency-check.bat --project "MyProject" --scan "./" --out "./dependency-check-report" --format "HTML" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
 
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
