@@ -1,28 +1,16 @@
-FROM openjdk:11-slim
+# Use an official OpenJDK image as a base
+FROM openjdk:11
 
-WORKDIR /usr/src/app
+# Set the working directory
+WORKDIR /app
 
-ENV DEPENDENCY_CHECK_VERSION 6.5.3
-ADD https://github.com/jeremylong/DependencyCheck/releases/download/v${DEPENDENCY_CHECK_VERSION}/dependency-check-${DEPENDENCY_CHECK_VERSION}-release.zip /usr/src/app/
+# Install Dependency-Check
+ADD https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip /app/
 RUN apt-get update && \
     apt-get install -y unzip && \
-    unzip dependency-check-${DEPENDENCY_CHECK_VERSION}-release.zip && \
-    rm dependency-check-${DEPENDENCY_CHECK_VERSION}-release.zip && \
-    apt-get remove -y unzip && \
-    apt-get clean
+    unzip dependency-check-9.1.0-release.zip && \
+    rm dependency-check-9.1.0-release.zip && \
+    mv dependency-check /opt/dependency-check
 
-RUN mv dependency-check /usr/share/
-
-ENV DATA_DIR /usr/share/dependency-check/data
-ENV REPORT_DIR /usr/src/app/reports
-ENV SRC_DIR /usr/src/app/src
-
-
-RUN mkdir -p ${DATA_DIR}
-RUN mkdir -p ${REPORT_DIR}
-RUN mkdir -p ${SRC_DIR}
-
-VOLUME ["/usr/share/dependency-check/data"]
-
-
-CMD ["/usr/share/dependency-check/bin/dependency-check.sh", "--data", "${DATA_DIR}", "--out", "${REPORT_DIR}", "--scan", "${SRC_DIR}"]
+# Define the entry point
+ENTRYPOINT ["/opt/dependency-check/bin/dependency-check.sh"]
