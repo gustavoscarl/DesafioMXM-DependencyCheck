@@ -10,13 +10,16 @@ on:
 
 jobs:
   dependency-check:
-    runs-on: ubuntu-latest  # Switch to a Linux runner for Docker compatibility
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: List files in the repository
+      run: ls -alh  # This step can help confirm that the Dockerfile is in the expected location
+
     - name: Build Docker image
-      run: docker build -t dependency-check-image .
+      run: docker build -t dependency-check-image -f nvd_bd.dockerfile .
 
     - name: Run Dependency-Check in Docker
       run: |
@@ -30,7 +33,7 @@ jobs:
         foreach ($dependency in $report.dependencies) {
             if ($dependency.vulnerabilities) {
                 foreach ($vuln in $dependency.vulnerabilities) {
-                    $pkgId = $dependency.fileName
+                    $pkgId = $dependency.fileName  # Assuming the package ID is stored in fileName for each dependency
                     $severity = $vuln.severity
                     Write-Output "Package ID: $pkgId, Severity: $severity"
                 }
