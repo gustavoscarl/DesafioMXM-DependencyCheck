@@ -1,12 +1,14 @@
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
 $vulnerable = $false
-Write-Output "Vulnerabilities Details:"
+
+Write-Output "Report Details:`n`n"
 
 $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
 
 foreach ($dependency in $report.dependencies) {
   $highestSeverity = -1
   $highestSeverityLabel = ""
+
   $evidence = $dependency.evidenceCollected
     
   if ($dependency.vulnerabilities) {
