@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Dependency-Check
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./cicd" --out "./dependency-check-report" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
