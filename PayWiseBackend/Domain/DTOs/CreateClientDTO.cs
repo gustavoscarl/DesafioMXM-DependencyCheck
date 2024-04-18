@@ -1,6 +1,7 @@
 ﻿using PayWiseBackend.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 
+// Comment
 namespace PayWiseBackend.Domain.DTOs
 {
     public class CreateClientDTO
