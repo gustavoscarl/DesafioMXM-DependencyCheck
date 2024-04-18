@@ -16,6 +16,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Test API Key Output
+      env:
+        NVDAPI_KEY: ${{ secrets.NVDAPIKEY }}
+      run: |
+        echo "API Key is $NVDAPI_KEY"
+
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
