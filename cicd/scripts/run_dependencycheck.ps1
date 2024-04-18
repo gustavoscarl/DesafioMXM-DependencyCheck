@@ -40,9 +40,9 @@ foreach ($dependency in $report.dependencies) {
     Write-Output "Total Evidence: $totalEvidence"
 
   }
-  else {
-    Write-Output "No Vulnerabilities Found! Check https://jeremylong.github.io/DependencyCheck/general/hints.html on how to search for False Negatives."
-  }
+}
+if (-not $vulnerable) {
+  Write-Output "No Vulnerabilities Found! Check https://jeremylong.github.io/DependencyCheck/general/hints.html on how to search for False Negatives."
 }
 if ($vulnerable) {
   echo "vulnerable=true" >> $env:GITHUB_OUTPUT
