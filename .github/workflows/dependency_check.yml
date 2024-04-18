@@ -39,6 +39,7 @@ jobs:
                 }
             }
         }
+      shell: pwsh
 
     - name: Display Vulnerability Details
       if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
@@ -58,6 +59,7 @@ jobs:
             }
           }
         }
+      shell: pwsh
 
     - name: Fail if vulnerabilities found
       if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
