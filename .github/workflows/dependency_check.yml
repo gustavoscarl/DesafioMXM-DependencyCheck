@@ -31,7 +31,7 @@ jobs:
       env:
         NVDAPI_KEY: ${{ secrets.NVDAPIKEY }}
       run: |
-        .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey "$NVDAPI_KEY"
+        .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey="$NVDAPI_KEY"
         
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
