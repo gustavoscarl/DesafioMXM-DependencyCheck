@@ -13,34 +13,34 @@ jobs:
   dependency-check:
     runs-on: windows-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Test Secret Access
-      run: |
-        echo "Secret key: ${{ secrets.NVDAPIKEY }}"
+      - name: Test Secret Access
+        run: |
+          echo "Secret key: ${{ secrets.NVDAPIKEY }}"
 
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '11'
-        
-    - name: Download Dependency-Check
-      run: |
-        Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
-        Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
-    
-    - name: Run Dependency-Check
-      run: |
-        .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
-        
-    - name: Check for Vulnerabilities
-      id: check_vulnerabilities
-      run: ./run_dependencycheck.ps1
-    
-    - name: Fail if vulnerabilities found
-      if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
-      run: |
-        echo "Vulnerabilities found, failing the build. Check and update your packages to fix security."
-        exit 1
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "11"
+
+      - name: Download Dependency-Check
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
+          Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
+
+      - name: Run Dependency-Check
+        run: |
+          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+
+      - name: Check for Vulnerabilities
+        id: check_vulnerabilities
+        run: .\cicd\run_dependencycheck.ps1
+
+      - name: Fail if vulnerabilities found
+        if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
+        run: |
+          echo "Vulnerabilities found, failing the build. Check and update your packages to fix security."
+          exit 1
