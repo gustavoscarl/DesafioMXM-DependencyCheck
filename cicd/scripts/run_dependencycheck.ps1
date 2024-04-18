@@ -2,8 +2,8 @@ $report = Get-Content -Path "./dependency-check-report/dependency-check-report.j
 $vulnerable = $false
 
 Write-Output "Report Details:"
-Write-Output
-Write-Output
+Write-Output "`n"
+Write-Output "`n"
 
 $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
 
