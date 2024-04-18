@@ -11,34 +11,74 @@ on:
 jobs:
   dependency-check:
     runs-on: windows-latest
-
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: List all files in the repository
+      run: |
+        echo "Listing all files from the repository root:"
+        ls -R
+      shell: bash
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
       with:
-        dotnet-version: '8.0.0'
+        distribution: 'temurin'
+        java-version: '11'
 
-    - name: Install Dependency Check CLI
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0'
+        
+        
+    - name: Download Dependency-Check
       run: |
-        choco install dependency-check --version 9.1.0
-
-    - name: Run Dependency Check
+        Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
+        Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
+    
+    - name: Run Dependency-Check
       run: |
-        dependency-check --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "HTML" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
-      continue-on-error: true
-
+        .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
+    - name: Output JSON content
+      run: |
+        Get-Content -Path "./dependency-check-report/dependency-check-report.json" | Write-Output
+        
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
       run: |
-        if ((Select-String -Path "./dependency-check-report/dependency-check-report.html" -Pattern "No dependencies were identified that have known vulnerabilities").Count -eq 0) {
-          echo "::set-output name=vulnerable::true"
-        } else {
-          echo "::set-output name=vulnerable::false"
+        $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
+        Write-Output "Vulnerability Report:"
+        foreach ($dependency in $report.dependencies) {
+            if ($dependency.vulnerabilities) {
+                foreach ($vuln in $dependency.vulnerabilities) {
+                    $pkgId = $dependency.fileName  # Assuming the package ID is stored in fileName for each dependency
+                    $severity = $vuln.severity
+                    Write-Output "Package ID: $pkgId, Severity: $severity"
+                }
+            }
         }
-
+    
+    - name: Display Vulnerability Details
+      if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
+      run: |
+        $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
+        Write-Output "Vulnerability Report:"
+        foreach ($dependency in $report.dependencies) {
+          if ($dependency.packages) {
+            foreach ($pkg in $dependency.packages) {
+              $pkgId = $dependencies.relatedDependencies.fileName
+              if ($dependency.vulnerabilities) {
+                foreach ($vuln in $dependency.vulnerabilities) {
+                  $severity = $vuln.severity
+                  Write-Output "Package ID: $pkgId, Severity: $severity"
+                }
+              }
+            }
+          }
+        }
+    
     - name: Fail if vulnerabilities found
       if: steps.check_vulnerabilities.outputs.vulnerable == 'true'
       run: |
