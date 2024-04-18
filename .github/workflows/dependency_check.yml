@@ -37,7 +37,7 @@ jobs:
 
       - name: Check for Vulnerabilities
         id: check_vulnerabilities
-        run: .\cicd\run_dependencycheck.ps1
+        run: .\cicd\scripts\run_dependencycheck.ps1
 
       - name: Fail if vulnerabilities found
         if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
