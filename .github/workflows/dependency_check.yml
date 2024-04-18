@@ -16,11 +16,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Test API Key Output
-      env:
-        NVDAPI_KEY: ${{ secrets.NVDAPIKEY }}
+    - name: Test Secret Access
       run: |
-        echo "API Key is $NVDAPI_KEY"
+        echo "Secret key: ${{ secrets.NVDAPIKEY }}"
 
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -34,10 +32,8 @@ jobs:
         Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
     
     - name: Run Dependency-Check
-      env:
-        NVDAPI_KEY: ${{ secrets.NVDAPIKEY }}
       run: |
-        .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey="$NVDAPI_KEY"
+        .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
         
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
