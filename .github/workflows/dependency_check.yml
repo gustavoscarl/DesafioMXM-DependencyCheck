@@ -35,23 +35,38 @@ jobs:
       id: check_vulnerabilities
       run: |
         $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
-            $vulnerable = $false
-            Write-Output "Vulnerability Report:"
-            foreach ($dependency in $report.dependencies) {
-                if ($dependency.vulnerabilities) {
-                    $vulnerable = $true
-                    foreach ($vuln in $dependency.vulnerabilities) {
-                        $pkgId = $dependency.fileName  # Assuming the package ID is stored in fileName for each dependency
-                        $severity = $vuln.severity
-                        Write-Output "Package ID: $pkgId, Severity: $severity"
+        $vulnerable = $false
+        Write-Output "Vulnerability Report:"
+        
+        $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
+        
+        foreach ($dependency in $report.dependencies) {
+            $highestSeverity = -1
+            $highestSeverityLabel = ""
+        
+            if ($dependency.vulnerabilities) {
+                $vulnerable = $true
+                foreach ($vuln in $dependency.vulnerabilities) {
+                    $currentSeverity = $severityLevels[$vuln.severity]
+                    if ($currentSeverity -gt $highestSeverity) {
+                        $highestSeverity = $currentSeverity
+                        $highestSeverityLabel = $vuln.severity
                     }
                 }
+                $cpeList = $dependency.vulnerabilities | ForEach-Object { $_.vulnerableSoftware | ForEach-Object { $_.software.id } }
+        
+                Write-Output "Dependency: $($dependency.fileName)"
+                Write-Output "CPEs: $($cpeList -join ', ')"
+                Write-Output "Package: $($dependency.packages.id)"
+                Write-Output "Highest Severity: $highestSeverityLabel"
             }
-            if ($vulnerable) {
-                echo "vulnerable=true" >> $env:GITHUB_OUTPUT
-            } else {
-                echo "vulnerable=false" >> $env:GITHUB_OUTPUT
-            }
+        }
+        if ($vulnerable) {
+            echo "vulnerable=true" >> $env:GITHUB_OUTPUT
+        } else {
+            echo "vulnerable=false" >> $env:GITHUB_OUTPUT
+        }
+
     
     - name: Fail if vulnerabilities found
       if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
