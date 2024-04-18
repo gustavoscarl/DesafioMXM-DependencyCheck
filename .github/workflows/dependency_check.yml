@@ -53,13 +53,13 @@ jobs:
                 }
             }
             if ($vulnerable) {
-                echo "vulnerable=true" >> $GITHUB_OUTPUT
+                echo "vulnerable=true" >> $env:$GITHUB_OUTPUT
             } else {
-                echo "vulnerable=false" >> $GITHUB_OUTPUT
+                echo "vulnerable=false" >> $env:$GITHUB_OUTPUT
             }
     
     - name: Fail if vulnerabilities found
       if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
       run: |
-        echo "Vulnerabilities found, failing the build. Check and update your packages to fix security." >> $GITHUB_STATE
+        echo "Vulnerabilities found, failing the build. Check and update your packages to fix security." >> $env:$GITHUB_STATE
         exit 1
