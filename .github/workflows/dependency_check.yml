@@ -56,11 +56,12 @@ jobs:
                     $cpeList = $dependency.vulnerabilities | ForEach-Object { 
                         $_.vulnerableSoftware | ForEach-Object { $_.software.id } 
                     } | Select-Object -Unique
-                
+                    Write-Output "=================================="
                     Write-Output "Dependency: $($dependency.fileName)"
                     Write-Output "CPEs: $($cpeList -join ', ')"
                     Write-Output "Package: $($dependency.packages.id)"
                     Write-Output "Highest Severity: $highestSeverityLabel"
+                    Write-Output "=================================="
                 }
             }
             if ($vulnerable) {
