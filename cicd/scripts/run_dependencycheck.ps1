@@ -20,12 +20,15 @@ foreach ($dependency in $report.dependencies) {
         $cpeList = $dependency.vulnerabilities | ForEach-Object { 
             $_.vulnerableSoftware | ForEach-Object { $_.software.id } 
         } | Select-Object -Unique
+
+        $totalCVEs = $dependency.vulnerabilities.Count
     
         Write-Output "===================================================="
         Write-Output "Dependency: $($dependency.fileName)"
-        Write-Output "CPEs: $($cpeList -join ', ')"
+        Write-Output "Vulnerability IDs: $($cpeList -join ', ')"
         Write-Output "Package: $($dependency.packages.id)"
         Write-Output "Highest Severity: $highestSeverityLabel"
+        Write-Output "CVE Count: $totalCVEs"
     }
 }
 if ($vulnerable) {
