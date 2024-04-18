@@ -23,7 +23,7 @@ jobs:
 
     - name: Run Dependency-Check in Docker
       run: |
-        docker run --rm -v "${{ github.workspace }}:/src" dependency-check-image --project "PayWiseBackend" --scan "/src" --out "/src/dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
+        docker run --rm -v "${{ github.workspace }}:" dependency-check-image --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
 
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
