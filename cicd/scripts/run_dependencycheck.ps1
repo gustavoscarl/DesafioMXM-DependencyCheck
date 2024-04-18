@@ -1,6 +1,6 @@
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
 $vulnerable = $false
-Write-Output "Vulnerability Report:"
+Write-Output "Vulnerabilities Found:"
 
 $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
 
@@ -21,6 +21,7 @@ foreach ($dependency in $report.dependencies) {
             $_.vulnerableSoftware | ForEach-Object { $_.software.id } 
         } | Select-Object -Unique
     
+        Write-Output "===================================================="
         Write-Output "Dependency: $($dependency.fileName)"
         Write-Output "CPEs: $($cpeList -join ', ')"
         Write-Output "Package: $($dependency.packages.id)"
