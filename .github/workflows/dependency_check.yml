@@ -34,9 +34,6 @@ jobs:
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
       run: |
-       - name: Check for Vulnerabilities
-          id: check_vulnerabilities
-          run: |
             $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
             $vulnerable = $false
             Write-Output "Vulnerability Report:"
