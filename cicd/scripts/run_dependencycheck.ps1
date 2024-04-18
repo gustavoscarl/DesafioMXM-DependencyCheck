@@ -1,7 +1,9 @@
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
 $vulnerable = $false
 
-Write-Output "Report Details:`n`n"
+Write-Output "Report Details:"
+Write-Output
+Write-Output
 
 $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
 
