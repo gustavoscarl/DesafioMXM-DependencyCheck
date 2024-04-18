@@ -7,6 +7,7 @@ $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITIC
 foreach ($dependency in $report.dependencies) {
     $highestSeverity = -1
     $highestSeverityLabel = ""
+    $evidence = $dependency.evidenceCollected
     
     if ($dependency.vulnerabilities) {
         $vulnerable = $true
@@ -22,6 +23,12 @@ foreach ($dependency in $report.dependencies) {
         } | Select-Object -Unique
 
         $totalCVEs = $dependency.vulnerabilities.Count
+
+        $totalEvidence += $evidence.vendorEvidence.Count
+        $totalEvidence += $evidence.productEvidence.Count
+        $totalEvidence += $evidence.versionEvidence.Count
+
+
     
         Write-Output "===================================================="
         Write-Output "Dependency: $($dependency.fileName)"
@@ -29,6 +36,7 @@ foreach ($dependency in $report.dependencies) {
         Write-Output "Package: $($dependency.packages.id)"
         Write-Output "Highest Severity: $highestSeverityLabel"
         Write-Output "CVE Count: $totalCVEs"
+        Write-Output "CVE Count: $totalEvidence"
     }
 }
 if ($vulnerable) {
