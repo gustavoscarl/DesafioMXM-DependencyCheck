@@ -35,7 +35,10 @@ jobs:
     - name: Run Dependency-Check
       run: |
         .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./" --out "./dependency-check-report" --format "JSON" --nvdApiKey "d2bb331f-4cad-45a5-90bb-3fe4e28e33f2"
-    
+    - name: Output JSON content
+      run: |
+        Get-Content -Path "./dependency-check-report/dependency-check-report.json" | Write-Output
+        
     - name: Check for Vulnerabilities
       id: check_vulnerabilities
       run: |
