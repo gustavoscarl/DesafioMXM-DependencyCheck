@@ -20,12 +20,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '6.0'
-        
         
     - name: Download Dependency-Check
       run: |
@@ -61,5 +55,5 @@ jobs:
     - name: Fail if vulnerabilities found
       if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
       run: |
-        echo "Vulnerabilities found, failing the build. Check and update your packages to fix security." >> $env:GITHUB_STATE
+        echo "Vulnerabilities found, failing the build. Check and update your packages to fix security."
         exit 1
