@@ -24,9 +24,7 @@ foreach ($dependency in $report.dependencies) {
 
         $totalCVEs = $dependency.vulnerabilities.Count
 
-        $totalEvidence += $evidence.vendorEvidence.Count
-        $totalEvidence += $evidence.productEvidence.Count
-        $totalEvidence += $evidence.versionEvidence.Count
+        $totalEvidence = $evidence.vendorEvidence.Count + $evidence.productEvidence.Count + $evidence.versionEvidence.Count
 
 
     
@@ -36,7 +34,7 @@ foreach ($dependency in $report.dependencies) {
         Write-Output "Package: $($dependency.packages.id)"
         Write-Output "Highest Severity: $highestSeverityLabel"
         Write-Output "CVE Count: $totalCVEs"
-        Write-Output "CVE Count: $totalEvidence"
+        Write-Output "Total Evidence: $totalEvidence"
     }
 }
 if ($vulnerable) {
