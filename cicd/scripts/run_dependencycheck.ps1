@@ -107,9 +107,9 @@ if (-not $vulnerable) {
 if ($vulnerable) {
   Write-Output "vulnerable=true" >> $env:GITHUB_OUTPUT
   if ($highLevel) {
-    Write-Output "highLevel=true" >> $env:GITHUB_OUTPUT
+    Write-Output "highLevel=true" | Out-File -Append $env:GITHUB_OUTPUT
   }
   if ($criticalLevel) {
-    Write-Output "criticalLevel=true" >> $env:GITHUB_OUTPUT
+    Write-Output "criticalLevel=true" | Out-File -Append $env:GITHUB_OUTPUT
   }
 }
