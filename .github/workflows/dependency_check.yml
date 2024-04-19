@@ -37,7 +37,7 @@ jobs:
         if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
         run: |
           Write-Output "Vulnerabilities found, failing the build."
-          if (${{ steps.check_vulnerabilities.outputs.highlLevel == 'true' ){
+          if (${{ steps.check_vulnerabilities.outputs.highlLevel == 'true' }}){
             Write-Output "HIGH Severity Vulnerabilities Found"
           }
           if (${{ steps.check_vulnerabilities.outputs.criticalLevel == 'true' }}){
