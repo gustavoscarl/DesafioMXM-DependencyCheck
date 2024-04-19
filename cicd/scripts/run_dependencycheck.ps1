@@ -56,10 +56,8 @@ foreach ($dependency in $report.dependencies) {
 
   $evidence = $dependency.evidenceCollected
   
-  # Caso dependency tenha o objeto 'vulnerabilities', define a variável '$vulnerable' como true, que falhará a build
+  # Caso dependency tenha o objeto 'vulnerabilities', irá parsear as informações do JSON convertido.
   if ($dependency.vulnerabilities) {
-    $vulnerable = $true
-
     # Foreach para parsear a severidade maior de cada dependency, utilizando de variavel auxiliar $highestSeverityLabel. $severityLevels[$vuln.severity] faz com que a severidade atual seja incluída no dicionário, definindo seu valor número a partir da string ('LOW','MEDIUM', etc).
     foreach ($vuln in $dependency.vulnerabilities) {
       $currentSeverity = $severityLevels[$vuln.severity]
@@ -69,9 +67,11 @@ foreach ($dependency in $report.dependencies) {
       }
       if ($vuln.severity -eq 'HIGH') {
         $highLevel = $true
+        $vulnerable = $true
       }
       if ($vuln.severity -eq 'CRITICAL') {
         $criticalLevel = $true
+        $vulnerable = $true
       }
     }
 
