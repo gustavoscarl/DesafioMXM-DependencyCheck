@@ -1,6 +1,9 @@
 # Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
 
+# Inicializa a lista que armazenará os nomes das dependências com vulnerabilidades 'HIGH' ou 'CRITICAL'
+$highOrCriticalDependencies = @()
+
 # Contadores de severidades alta e críticas
 $highSeverityCount = 0
 $criticalSeverityCount = 0
@@ -73,6 +76,12 @@ foreach ($dependency in $report.dependencies) {
       if ($vuln.severity -eq 'CRITICAL') {
         $criticalSeverityCount++
       }
+
+      # Verifica se a severidade é 'HIGH' ou 'CRITICAL' e se a dependência ainda não foi adicionada à lista
+      if (($currentSeverity -ge $severityLevels['HIGH']) -and -not $dependencyAdded) {
+        $highOrCriticalDependencies += $dependency.fileName
+        $dependencyAdded = $true
+      }
     }
 
     # Transforma todos os CPES dentro de report.dependencies.vulnerabilities.vulnerableSoftware.software.id e transforma seleciona ao final somente os com nome únicos
@@ -100,8 +109,7 @@ foreach ($dependency in $report.dependencies) {
   }
 }
 
-Write-Output "highSeverityCount=$highSeverityCount" >> $env:GITHUB_OUTPUT
-Write-Output "criticalSeverityCount=$criticalSeverityCount" >> $env:GITHUB_OUTPUT
+Write-Output "Total Dependencies with High or Critical Vulnerabilities: $($highOrCriticalDependencies.Count)" >> $env:GITHUB_OUTPUT
 
 if (-not $vulnerable) {
   Write-Output "===================================================="
