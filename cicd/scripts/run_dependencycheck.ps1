@@ -10,11 +10,14 @@ $dateReport = $report.projectInfo.reportDate
 # Converte a string para um objeto DateTime
 $dateTime = [DateTime]::Parse($dateReport)
 
+# Especifica que o DateTime é do tipo UTC
+$dateTimeUtc = [DateTime]::SpecifyKind($dateTime, [DateTimeKind]::Utc)
+
 # Encontra a informação do fuso horário de Brasília (GMT-3)
 $timeZoneBrasilia = [TimeZoneInfo]::FindSystemTimeZoneById("E. South America Standard Time")
 
 # Converte a data UTC para o horário de Brasília
-$localDateTime = [TimeZoneInfo]::ConvertTimeFromUtc($dateTime, $timeZoneBrasilia)
+$localDateTime = [TimeZoneInfo]::ConvertTimeFromUtc($dateTimeUtc, $timeZoneBrasilia)
 
 # Formata a data para o formato desejado: "dd/MM/yyyy at HH:mm:ss 'GMT-3'"
 $formattedDate = $localDateTime.ToString("dd/MM/yyyy 'at' HH:mm:ss 'GMT-3'")
