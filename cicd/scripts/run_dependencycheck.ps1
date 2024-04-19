@@ -108,8 +108,9 @@ foreach ($dependency in $report.dependencies) {
 
   }
 }
+$vulnerabilitiesCount = $highOrCriticalDependencies.Count
 
-Write-Output "Total Dependencies with High or Critical Vulnerabilities: $($highOrCriticalDependencies.Count)" >> $env:GITHUB_OUTPUT
+Write-Output "vulnerabilitiesCount=$vulnerabilitiesCount " >> $env:GITHUB_OUTPUT
 
 if (-not $vulnerable) {
   Write-Output "===================================================="
