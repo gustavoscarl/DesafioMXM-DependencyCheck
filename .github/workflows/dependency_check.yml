@@ -33,8 +33,11 @@ jobs:
         id: check_vulnerabilities
         run: .\cicd\scripts\run_dependencycheck.ps1
 
-      - name: Fail if vulnerabilities found
+      - name: Build Result
         if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
         run: |
-          Write-Output "Vulnerabilities found, failing the build. Check and update your packages to fix security."
+          Write-Output "Vulnerabilities found, failing the build."
+          Write-Output "HIGH Severity Vulnerabilities: ${{ steps.check_vulnerabilities.outputs.highSeverityCount }}"
+          Write-Output "CRITICAL Severity Vulnerabilities: ${{ steps.check_vulnerabilities.outputs.criticalSeverityCount }}"
+          Write-Output "Check and update your packages to fix security."
           exit 1

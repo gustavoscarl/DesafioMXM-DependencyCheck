@@ -1,6 +1,10 @@
 # Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
 
+# Contadores de severidades alta e críticas
+$highSeverityCount = 0
+$criticalSeverityCount = 0
+
 #Define que o padrão de vulnerabilidade é nulo/falso
 $vulnerable = $false
 
@@ -63,6 +67,12 @@ foreach ($dependency in $report.dependencies) {
         $highestSeverity = $currentSeverity
         $highestSeverityLabel = $vuln.severity
       }
+      if ($vuln.severity -eq 'HIGH') {
+        $highSeverityCount++
+      }
+      if ($vuln.severity -eq 'CRITICAL') {
+        $criticalSeverityCount++
+      }
     }
 
     # Transforma todos os CPES dentro de report.dependencies.vulnerabilities.vulnerableSoftware.software.id e transforma seleciona ao final somente os com nome únicos
@@ -89,13 +99,15 @@ foreach ($dependency in $report.dependencies) {
 
   }
 }
+
+Write-Output "highSeverityCount=$highSeverityCount" >> $env:GITHUB_OUTPUT
+Write-Output "criticalSeverityCount=$criticalSeverityCount" >> $env:GITHUB_OUTPUT
+
 if (-not $vulnerable) {
   Write-Output "===================================================="
   Write-Output "No Vulnerabilities Found! Check https://jeremylong.github.io/DependencyCheck/general/hints.html on how to search for False Negatives."
+  Write-Output "vulnerable=false" >> $env:GITHUB_OUTPUT
 }
 if ($vulnerable) {
-  echo "vulnerable=true" >> $env:GITHUB_OUTPUT
-}
-else {
-  echo "vulnerable=false" >> $env:GITHUB_OUTPUT
+  Write-Output "vulnerable=true" >> $env:GITHUB_OUTPUT
 }
