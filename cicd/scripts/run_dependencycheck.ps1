@@ -1,12 +1,9 @@
 # Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
 
-# Inicializa a lista que armazenará os nomes das dependências com vulnerabilidades 'HIGH' ou 'CRITICAL'
-$highOrCriticalDependencies = @()
-
 # Contadores de severidades alta e críticas
-$highSeverityCount = 0
-$criticalSeverityCount = 0
+$highLevel = $false
+$criticalLevel = $false
 
 #Define que o padrão de vulnerabilidade é nulo/falso
 $vulnerable = $false
@@ -71,16 +68,10 @@ foreach ($dependency in $report.dependencies) {
         $highestSeverityLabel = $vuln.severity
       }
       if ($vuln.severity -eq 'HIGH') {
-        $highSeverityCount++
+        $highLevel = $true
       }
       if ($vuln.severity -eq 'CRITICAL') {
-        $criticalSeverityCount++
-      }
-
-      # Verifica se a severidade é 'HIGH' ou 'CRITICAL' e se a dependência ainda não foi adicionada à lista
-      if (($currentSeverity -ge $severityLevels['HIGH']) -and -not $dependencyAdded) {
-        $highOrCriticalDependencies += $dependency.fileName
-        $dependencyAdded = $true
+        $criticalLevel = $true
       }
     }
 
@@ -108,10 +99,6 @@ foreach ($dependency in $report.dependencies) {
 
   }
 }
-$vulnerabilitiesCount = $highOrCriticalDependencies.Count
-
-Write-Output "vulnerabilitiesCount=$vulnerabilitiesCount " >> $env:GITHUB_OUTPUT
-
 if (-not $vulnerable) {
   Write-Output "===================================================="
   Write-Output "No Vulnerabilities Found! Check https://jeremylong.github.io/DependencyCheck/general/hints.html on how to search for False Negatives."
@@ -119,4 +106,10 @@ if (-not $vulnerable) {
 }
 if ($vulnerable) {
   Write-Output "vulnerable=true" >> $env:GITHUB_OUTPUT
+  if ($highLevel) {
+    Write-Output "highLevel=true" >> $GITHUB_ENV
+  }
+  if ($criticalLevel) {
+    Write-Output "criticalLevel=true" >> $GITHUB_ENV
+  }
 }
