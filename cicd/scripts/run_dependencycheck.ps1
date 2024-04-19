@@ -40,16 +40,23 @@ Write-Output "Project Name: $nameReport"
 
 Write-Output "`n"
 
+# Dicionário dos graus de severidade das vulnerabilidades de cada dependência, atribuindo um valor para cada para determinar a maior
 $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
 
+# Analisa cada dependência dentro da array dependencies
 foreach ($dependency in $report.dependencies) {
+
+  # Definidos como -1 e nulo para não interferir no mapeamento de qual a maior severidade no passo abaixo (foreach vuln in vulnerabilities)
   $highestSeverity = -1
   $highestSeverityLabel = ""
 
   $evidence = $dependency.evidenceCollected
-    
+  
+  # Caso dependency tenha o objeto 'vulnerabilities', define a variável '$vulnerable' como true, que falhará a build
   if ($dependency.vulnerabilities) {
     $vulnerable = $true
+
+    # Foreach para parsear a severidade maior de cada dependency, utilizando de variavel auxiliar $highestSeverityLabel. $severityLevels[$vuln.severity] faz com que a severidade atual seja incluída no dicionário, definindo seu valor número a partir da string ('LOW','MEDIUM', etc).
     foreach ($vuln in $dependency.vulnerabilities) {
       $currentSeverity = $severityLevels[$vuln.severity]
       if ($currentSeverity -gt $highestSeverity) {
@@ -57,6 +64,8 @@ foreach ($dependency in $report.dependencies) {
         $highestSeverityLabel = $vuln.severity
       }
     }
+
+    # Transforma todos os CPES dentro de report.dependencies.vulnerabilities.vulnerableSoftware.software.id e transforma seleciona ao final somente os com nome únicos
     $cpeList = $dependency.vulnerabilities | ForEach-Object { 
       $_.vulnerableSoftware | ForEach-Object { $_.software.id } 
     } | Select-Object -Unique
@@ -81,6 +90,7 @@ foreach ($dependency in $report.dependencies) {
   }
 }
 if (-not $vulnerable) {
+  Write-Output "===================================================="
   Write-Output "No Vulnerabilities Found! Check https://jeremylong.github.io/DependencyCheck/general/hints.html on how to search for False Negatives."
 }
 if ($vulnerable) {
