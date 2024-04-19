@@ -37,10 +37,10 @@ jobs:
         if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
         run: |
           Write-Output "Vulnerabilities found, failing the build."
-          if ($env:highLevel -eq "true"){
+          if (${{ steps.check_vulnerabilities.outputs.highlLevel == 'true' ){
             Write-Output "HIGH Severity Vulnerabilities Found"
           }
-          if ($env:criticalLevel -eq "true"){
+          if (${{ steps.check_vulnerabilities.outputs.criticalLevel == 'true' }}){
             Write-Output "CRITICAL Severity Vulnerabilities Found"
             }
           Write-Output "Check and update your packages to fix security."
