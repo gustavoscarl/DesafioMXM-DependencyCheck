@@ -1,8 +1,40 @@
+# Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
+
+#Define que o padrão de vulnerabilidade é nulo/falso
 $vulnerable = $false
 
+# Obtém a data do relatório em formato string
+$dateReport = $report.projectInfo.reportDate
+
+# Converte a string para um objeto DateTime
+$dateTime = [DateTime]::Parse($dateReport)
+
+# Encontra a informação do fuso horário de Brasília (GMT-3)
+$timeZoneBrasilia = [TimeZoneInfo]::FindSystemTimeZoneById("E. South America Standard Time")
+
+# Converte a data UTC para o horário de Brasília
+$localDateTime = [TimeZoneInfo]::ConvertTimeFromUtc($dateTime, $timeZoneBrasilia)
+
+# Formata a data para o formato desejado: "dd/MM/yyyy at HH:mm:ss 'GMT-3'"
+$formattedDate = $localDateTime.ToString("dd/MM/yyyy 'at' HH:mm:ss 'GMT-3'")
+
+# Variavel do nome do projeto
+$nameReport = $report.projectInfo.name
+
+# Variavel da versão do projeto
+$versionReport = $report.scanInfo.engineVersion
+
 Write-Output "`n"
+
 Write-Output "Report Details:"
+
+Write-Output "`n"
+
+Write-Output "Dependency Check Version: $versionReport"
+Write-Output "Report Date: $dateReport"
+Write-Output "Project Name: $formattedDate"
+
 Write-Output "`n"
 
 $severityLevels = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
