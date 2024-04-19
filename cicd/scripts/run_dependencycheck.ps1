@@ -32,8 +32,8 @@ Write-Output "Report Details:"
 Write-Output "`n"
 
 Write-Output "Dependency Check Version: $versionReport"
-Write-Output "Report Date: $dateReport"
-Write-Output "Project Name: $formattedDate"
+Write-Output "Report Date: $formattedDate"
+Write-Output "Project Name: $nameReport"
 
 Write-Output "`n"
 
