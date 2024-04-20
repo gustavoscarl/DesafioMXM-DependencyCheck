@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Dependency-Check Scan
         run: |
-          .\cicd\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./cicd/dependency-check-report" --format "HTML" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./cicd/dependency-check-report" --format "HTML" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
       - name: Commit Dependency-Check Reports
         run: |
