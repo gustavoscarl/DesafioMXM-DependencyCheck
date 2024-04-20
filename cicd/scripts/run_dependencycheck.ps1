@@ -5,8 +5,9 @@ $report = Get-Content -Path "./dependency-check-report/dependency-check-report.j
 $highLevel = $false
 $criticalLevel = $false
 
-#Define que o padrão de vulnerabilidade é nulo/falso
+#Define que o padrão de vulnerabilidade e warn é nulo/falso
 $vulnerable = $false
+$warn = $false
 
 # Obtém a data do relatório em formato string
 $dateReport = $report.projectInfo.reportDate
@@ -65,6 +66,15 @@ foreach ($dependency in $report.dependencies) {
         $highestSeverity = $currentSeverity
         $highestSeverityLabel = $vuln.severity
       }
+
+      if ($vuln.severity -eq 'LOW') {
+        $lowLevel = $true
+        $warn = $true
+      }
+      if ($vuln.severity -eq 'MEDIUM') {
+        $mediumLevel = $true
+        $warn = $true
+      }
       if ($vuln.severity -eq 'HIGH') {
         $highLevel = $true
         $vulnerable = $true
@@ -73,6 +83,7 @@ foreach ($dependency in $report.dependencies) {
         $criticalLevel = $true
         $vulnerable = $true
       }
+
     }
 
     # Transforma todos os CPES dentro de report.dependencies.vulnerabilities.vulnerableSoftware.software.id e transforma seleciona ao final somente os com nome únicos
@@ -99,11 +110,22 @@ foreach ($dependency in $report.dependencies) {
 
   }
 }
-if (-not $vulnerable) {
+if (-not $vulnerable -and -not $warn) {
   Write-Output "===================================================="
   Write-Output "No Vulnerabilities Found! Check https://jeremylong.github.io/DependencyCheck/general/hints.html on how to search for False Negatives."
   Write-Output "vulnerable=false" >> $env:GITHUB_OUTPUT
 }
+
+if ($warn -eq 'true') {
+  Write-Output "warn=true" >> $env:GITHUB_OUTPUT
+  if ($lowLevel) {
+    Write-Output "lowLevel=true" | Out-File -Append $env:GITHUB_OUTPUT
+  }
+  if ($mediumLevel) {
+    Write-Output "mediumLevel=true" | Out-File -Append $env:GITHUB_OUTPUT
+  }
+}
+
 if ($vulnerable) {
   Write-Output "vulnerable=true" >> $env:GITHUB_OUTPUT
   if ($highLevel) {

@@ -34,5 +34,6 @@ jobs:
         run: .\cicd\scripts\run_dependencycheck.ps1
 
       - name: Build Result
+        if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
         run: .\cicd\scripts\high_critical_vulnefound.ps1 -highLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -criticalLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
         shell: pwsh
