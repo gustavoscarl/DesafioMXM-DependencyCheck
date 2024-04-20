@@ -30,13 +30,13 @@ jobs:
 
       - name: Run Dependency-Check Scan
         run: |
-          $env:REPORT_PATH\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "$env:REPORT_PATH/dependency-check-report" --format "HTML" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          {{$env:REPORT_PATH}}\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "{{$env:REPORT_PATH}}/dependency-check-report" --format "HTML" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
       - name: Commit Dependency-Check Reports
         run: |
           git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --local user.name "${{ secrets.GIT_USER_NAME }}"
-          git add $env:REPORT_PATH/dependency-check-report/*
+          git add {{$env:REPORT_PATH}}/dependency-check-report/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push
 
