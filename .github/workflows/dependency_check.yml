@@ -25,7 +25,7 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
 
-      - name: Run Dependency-Check
+      - name: Run Dependency-Check Scan
         run: |
           .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PaywiseBackend" --out "./dependency-check-report" --format "JSON" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
