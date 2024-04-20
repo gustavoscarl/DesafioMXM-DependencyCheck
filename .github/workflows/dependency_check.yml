@@ -35,9 +35,11 @@ jobs:
       - name: Commit Dependency-Check Reports
         run: |
           git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
-          git config --local user.name "gustavoscarl"
+          git config --local user.name "${{ secrets.GIT_USER_NAME }}"
           git add ./dependency-check-report/*
-          git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
+          git diff --staged || echo "No staged changes"
+          git commit -m "Add Dependency Check Reports" --allow-empty || echo "No changes to commit"
+          git push
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
