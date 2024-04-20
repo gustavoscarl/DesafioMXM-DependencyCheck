@@ -38,7 +38,6 @@ jobs:
           git config --local user.name "gustavoscarl"
           git add ./dependency-check-report/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
-          git -c http.extraHeader="AUTHORIZATION: bearer ${{ secrets.MY_GITHUB_TOKEN }}" push origin HEAD:${{ github.ref }}
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
