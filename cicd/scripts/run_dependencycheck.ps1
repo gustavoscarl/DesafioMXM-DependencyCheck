@@ -127,9 +127,8 @@ if ($warn -eq 'true') {
 }
 
 
-# MUDAR PARA TRUE, MUDANÇA DE TESTE
 if ($vulnerable) {
-  Write-Output "vulnerable=false" >> $env:GITHUB_OUTPUT
+  Write-Output "vulnerable=true" >> $env:GITHUB_OUTPUT
   if ($highLevel) {
     Write-Output "highLevel=true" | Out-File -Append $env:GITHUB_OUTPUT
   }
@@ -137,6 +136,3 @@ if ($vulnerable) {
     Write-Output "criticalLevel=true" | Out-File -Append $env:GITHUB_OUTPUT
   }
 }
-
-# EXCLUIR LINHA, MUDANÇA DE TESTE
-Write-Output "warn=true" >> $env:GITHUB_OUTPUT
