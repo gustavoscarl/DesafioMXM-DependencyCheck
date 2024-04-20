@@ -1,9 +1,12 @@
 # Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report
 $report = Get-Content -Path "./dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
 
-# Contadores de severidades alta e críticas
+# Sinalizadores de severidades das vulnerabilidades
+$lowLevel = $false
+$mediumLevel = $false
 $highLevel = $false
 $criticalLevel = $false
+
 
 #Define que o padrão de vulnerabilidade e warn é nulo/falso
 $vulnerable = $false
