@@ -51,7 +51,7 @@ jobs:
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
-        run: .\cicd\scripts\run_dependencycheck.ps1
+        run: .\cicd\scripts\run_dependencycheck.ps1 -ReportPath "./cicd/dependency-check-report-backend/dependency-check-report.json"
 
       - name: Fail Build if High or Critical Vulnerabilities Found
         if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
