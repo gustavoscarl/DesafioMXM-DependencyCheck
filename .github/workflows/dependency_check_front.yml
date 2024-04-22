@@ -41,7 +41,7 @@ jobs:
           git config --local user.name "${{ secrets.GIT_USER_NAME }}"
           git add ./cicd/dependency-check-report-backend/*
           git commit -m "Add Dependency Check Reports"
-          git push origin main
+          git push origin main --force
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
