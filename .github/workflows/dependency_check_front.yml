@@ -3,7 +3,7 @@ name: Dependency Check on Frontend
 on:
   push:
     paths:
-      - "./frontend/package.json"
+      - "frontend/package.json"
   pull_request:
     branches:
       - main
