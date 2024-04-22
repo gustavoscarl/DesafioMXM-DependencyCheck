@@ -98,7 +98,12 @@ foreach ($dependency in $report.dependencies) {
 
     $totalEvidence = $evidence.vendorEvidence.Count + $evidence.productEvidence.Count + $evidence.versionEvidence.Count
 
-    $firstVulnerabilityIdConfidence = $dependency.vulnerabilityIds[0].confidence
+    if ($dependency.vulnerabilityIds -and $dependency.vulnerabilityIds.Count -gt 0) {
+      $firstVulnerabilityIdConfidence = $dependency.vulnerabilityIds[0].Confidence
+    }
+    else {
+      $firstVulnerabilityIdConfidence = "No Vulnerability IDs Found"
+    }
 
 
     
