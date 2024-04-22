@@ -39,7 +39,7 @@ jobs:
           git config --local user.name "${{ secrets.GIT_USER_NAME }}"
           git add ./cicd/dependency-check-report-frontend/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
-          git push
+          git push origin main
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
