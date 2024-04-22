@@ -1,0 +1,55 @@
+name: Dependency Check on Frontend
+
+on:
+  push:
+    paths:
+      - './frontend/package.json'
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "35 10 * * *"
+
+jobs:
+  dependency-check:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "11"
+
+      - name: Download Dependency-Check
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
+          Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
+
+      - name: Run Dependency-Check Scan
+        run: |
+          .\dependency-check\bin\dependency-check.bat --project "PayWiseFrontend" --scan "./frontend" --out "./cicd/dependency-check-report-frontend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-frontend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+
+      - name: Commit Dependency-Check Reports
+        run: |
+          git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
+          git config --local user.name "${{ secrets.GIT_USER_NAME }}"
+          git add ./cicd/dependency-check-report/*
+          git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
+          git push
+
+      - name: Vulnerabilities Report
+        id: check_vulnerabilities
+        run: .\cicd\scripts\run_dependencycheck.ps1
+
+      - name: Fail Build if High or Critical Vulnerabilities Found
+        if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
+        run: .\cicd\scripts\high_critical_vulnefound.ps1 -highLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -criticalLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
+        shell: pwsh
+
+      - name: Handle Low and Medium Level Vulnerabilities
+        if: steps.check_vulnerabilities.outputs.vulnerable != 'true' && steps.check_vulnerabilities.outputs.warn == 'true'
+        run: .\cicd\scripts\low_medium_vulnefound.ps1 -lowLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -mediumLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
+        shell: pwsh
