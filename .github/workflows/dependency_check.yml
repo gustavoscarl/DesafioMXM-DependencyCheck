@@ -3,7 +3,7 @@ name: Dependency Check on Backend
 on:
   push:
     paths:
-      - "PayWiseBackend/PayWiseBackend.csproj"
+      - "frontend/package.json"
   pull_request:
     branches:
       - main
@@ -22,6 +22,14 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "11"
+
+      - name: Set Path for Backend
+        if: github.workflow == 'Dependency Check on Backend'
+        run: echo "DEP_CHECK_PATH=./cicd/dependency-check-report-backend/dependency-check-report.json" >> $GITHUB_ENV
+
+      - name: Set Path for Frontend
+        if: github.workflow == 'Dependency Check on Frontend'
+        run: echo "DEP_CHECK_PATH=./cicd/dependency-check-report-frontend/dependency-check-report.json" >> $GITHUB_ENV
 
       - name: Download Dependency-Check
         run: |
@@ -43,7 +51,7 @@ jobs:
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
-        run: .\cicd\scripts\run_dependencycheck-backend.ps1
+        run: .\cicd\scripts\run_dependencycheck.ps1 -ReportPath "./cicd/dependency-check-report-backend/dependency-check-report.json"
 
       - name: Fail Build if High or Critical Vulnerabilities Found
         if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
