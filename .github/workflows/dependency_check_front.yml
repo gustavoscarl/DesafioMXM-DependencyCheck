@@ -3,7 +3,7 @@ name: Dependency Check on Frontend
 on:
   push:
     paths:
-      - './frontend/package.json'
+      - "./frontend/package.json"
   pull_request:
     branches:
       - main
@@ -34,6 +34,7 @@ jobs:
 
       - name: Commit Dependency-Check Reports
         run: |
+          git checkout main
           git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --local user.name "${{ secrets.GIT_USER_NAME }}"
           git add ./cicd/dependency-check-report-frontend/*
