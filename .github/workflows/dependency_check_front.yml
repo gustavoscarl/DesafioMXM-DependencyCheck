@@ -2,8 +2,8 @@ name: Dependency Check on Frontend
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - "PayWiseBackend/PayWiseBackend.csproj"
   pull_request:
     branches:
       - main

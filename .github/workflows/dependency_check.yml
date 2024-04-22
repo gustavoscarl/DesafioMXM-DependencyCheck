@@ -1,9 +1,9 @@
 name: Dependency Check on Backend
-#testtest
+
 on:
   push:
     paths:
-      - "PayWiseBackend/PayWiseBackend.csproj"
+      - "frontend/package.json"
   pull_request:
     branches:
       - main
