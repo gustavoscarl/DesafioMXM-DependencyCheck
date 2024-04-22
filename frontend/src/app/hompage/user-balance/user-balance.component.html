@@ -1,0 +1,94 @@
+<div class="">
+  <div class="row justify-content-between align-items-center user-greetings-container rounded p-3 col-lg-6">
+    <div class="col-auto">
+      <img src="assets/user-balance/avatar.svg" alt="Avatar" class="avatar img-fluid" />
+    </div>
+
+    <div class="col-auto">
+      <!-- <a [routerLink]="['/login']"><img src="assets/user-balance/vetor.svg" alt="Vetor" class="vetor img-fluid" /></a> -->
+      <!-- <p-chart type="bar" [data]="chartData" [options]="chartOptions" class="vetor img-fluid"></p-chart> -->
+      <!-- <div class="col-auto"> -->
+        <!-- <p-chart type="bar" [data]="chartData" [options]="chartOptions" class="light-img img-fluid"></p-chart> -->
+        <!-- <a [routerLink]="['/login']"><img src="assets/user-balance/vetor-I.svg" alt="Light Image"
+            class="light-img img-fluid" /></a> -->
+      <!-- </div> -->
+          <a role=button (click)="logout()" class="link-secondary pe-auto">Sair</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="user-balance-container mt-5 col-lg-6" [ngClass]="{ 'align-items-center': !temConta}">
+  <div class="col-5">
+    <div class="greeting" [ngClass]="{ 'mt-0': !temConta}">
+      <p class="custom-font ">Olá, {{ userName }}!</p>
+      <p class="custom-font"
+       *ngIf="temConta">Saldo Atual:</p>
+    </div>
+  </div>
+
+  <div class="">
+  <div>
+    <!-- <p *ngIf="saldoVisivel">Saldo: R$ 1000,00</p> -->
+    <button (click)="toggleSaldoVisibilidade()" class="exibirSaldo"
+    *ngIf="temConta">
+      <img class="darkOrLightMode" [src]="isdarkMode ? (saldoVisivel ? 'assets/user-balance/eye-solid-dark-mode.png' : 'assets/user-balance/eye-slash-solid-dark-mode.png') : (saldoVisivel ? 'assets/user-balance/eye-solid-light-mode.svg' : 'assets/user-balance/eye-slash-solid-light-mode.svg')" 
+      (click)="alternarExibicaoSaldo()" alt="Ícone para tema escuro">
+    </button>
+  </div>
+
+    <div class="">
+      <!-- <p class="saldo-atual custom-font"        
+      *ngIf="temConta">{{ saldoAtual | currency: 'BRL' }}</p> -->
+      <p class="saldo-atual custom-font" *ngIf="valorVisivel  && temConta">{{ saldoAtual | currency: 'BRL' }}</p>
+      <p class="saldo-atual custom-font" *ngIf="!valorVisivel && temConta">---</p>
+      
+      <p class="saldo-atual custom-font text-center" *ngIf="!temConta">Crie sua Conta Bancária ou Cartão!</p>
+    </div>
+  </div>
+</div>
+<div class="link-container d-lg-none">
+  <a class="historico-button" [routerLink]="['/historico']">Histórico</a>
+</div>
+
+<div class="col-12 row align-items-center text-center d-lg-none">
+  <div class="col-6 mt-5">
+    <p-chart type="bar" [data]="chartData" [options]="chartOptions" width="200px"></p-chart>
+
+  </div>
+  <div class="col-6 mt-5 text-start d-lg-none">
+    <div class=" d-flex">
+      <img id="setaup-dark" src="../../assets/user-balance/setaup.svg" alt="">
+      <img id="setaup-light" src="../../../assets/user-balance/setaup copy.svg" alt="">
+      <p class="d-inline text-success">R$ 0,00</p>
+    </div>
+    <div class="d-flex">
+      <img id="setadown-dark" src="../../assets/user-balance/setadown.svg" alt="">
+      <img id="setadown-light" src="../../../assets/user-balance/setadown copy.svg" alt="">
+      <p class="d-inline text-danger">R$ 0,00</p>
+    </div>
+  </div>
+
+</div>
+
+
+
+<div class="d-none d-lg-flex col-lg-6 mt-5">
+  <div class="d-flex">
+    <img src="../../assets/user-balance/barrasLG.svg" alt="">
+    <div class="ms-4 mt-2">
+      <p class="text-danger">R$ 0,00</p>
+      <p class="text-danger">Gastos</p>
+    </div>
+  </div>
+</div>
+
+<div class="d-none d-lg-flex col-lg-6 mt-5">
+  <div class="d-flex">
+    <img src="../../assets/user-balance/barras3.svg" alt="">
+    <div class="ms-4 mt-2">
+      <p class="text-success">R$ 0,00</p>
+      <p class="text-success">Ganhos</p>
+    </div>
+  </div>
+</div>

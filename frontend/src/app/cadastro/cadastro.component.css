@@ -1,0 +1,234 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background-color: #f0f0f0;
+}
+
+.form-group {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.exibirSenhaCadastro {
+  border: none;
+  background: none;
+  top: 31px;
+  position: absolute;
+  right: 45px;
+}
+
+.exibirSenhaCadastro {
+  border: none;
+  background: none;
+  align-items: end;
+}
+
+.darkOrLightMode {
+  height: 15px;
+  width: auto;
+}
+
+.exibirConfirmaçãoSenhaCadastro {
+  border: none;
+  background: none;
+  top: 31px;
+  position: absolute;
+  right: 45px;
+}
+
+.darkOrLightMode {
+  height: 15px;
+  width: auto;
+}
+
+input:-webkit-autofill {
+  -webkit-text-fill-color: black !important;
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+}
+
+a {
+  color: #ce2222;
+  text-decoration: none;
+}
+
+#seta-light {
+  display: block;
+}
+#seta-dark {
+  display: none;
+}
+
+.alerta {
+  position: fixed;
+  top: 2%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  color: rgb(15, 158, 15);
+  padding: 10px;
+  border-radius: 5px;
+  border-top: 20px solid rgb(15, 158, 15);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  background-color: #b3b3b3;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px solid #7f53df;
+}
+
+h2 {
+  padding-top: 50px;
+  text-align: center;
+}
+
+h4 {
+  margin-bottom: 20px;
+  padding: 16px;
+  text-decoration: underline;
+}
+.senha-error p {
+  margin: 0px;
+  padding: 0px;
+}
+.login {
+  margin-top: 50px;
+  margin-bottom: 0px;
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group > label {
+  display: flex;
+  justify-content: start;
+}
+.form-control {
+  border: 1px solid #7f53df; /* Adiciona uma borda de 1px sólida com cor cinza */
+  border-radius: 10px; /* Adiciona um leve arredondamento às bordas */
+}
+
+.form-control-file {
+  color: black;
+}
+
+.btn-purple {
+  background-color: #7f53df;
+  margin-bottom: 26px;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.btn-purple-submit {
+  background-color: #7f53df;
+  border-radius: 15px;
+}
+
+.btn-purple:hover {
+  background-color: #6630d9;
+  color: #7f53df;
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 10px 0;
+  }
+
+  .header img {
+    margin-bottom: 10px;
+  }
+
+  body {
+    background-image: url("../../assets/logotypes-login-cadastro/mobile-light.svg");
+    background-size: cover;
+    background-position: center; /* Para centralizar a imagem de fundo */
+    background-repeat: no-repeat;
+    background-position-y: -400px;
+  }
+  h2 {
+    margin-top: 10px;
+  }
+  .form-group {
+    margin: 8px 0;
+  }
+
+  h2,
+  h4 {
+    text-align: center;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .exibirSenhaCadastro {
+    border: none;
+    background: none;
+    align-items: end;
+  }
+
+  .darkOrLightMode {
+    height: 15px;
+    width: auto;
+  }
+
+  body {
+    background-color: black;
+  }
+
+  #seta-light {
+    display: none;
+  }
+  #seta-dark {
+    display: block;
+  }
+
+  input:-webkit-autofill {
+    -webkit-text-fill-color: #fff !important;
+    -webkit-box-shadow: 0 0 0 1000px #383737 inset !important;
+  }
+
+  label {
+    color: #a484e8;
+  }
+
+  .indigo,
+  h2 {
+    color: #7f53df;
+    text-decoration: underline;
+    text-decoration-color: #737373;
+  }
+
+  a {
+    color: #fff;
+  }
+
+  input,
+  select {
+    background-color: #383737;
+  }
+
+  input,
+  select {
+    color: #fff;
+  }
+
+  input::placeholder {
+    color: #929292;
+  }
+  input:focus {
+    background-color: #383737;
+    color: #fff;
+  }
+}

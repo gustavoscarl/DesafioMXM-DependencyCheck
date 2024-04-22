@@ -1,0 +1,47 @@
+<div class="pt-5 pb-5 m-5 ps-5 d-flex text-start justify-content-start">
+  <div>
+    <a [routerLink]="['/home']"><img id="seta-dark" src="../../assets/conta-criada/seta-dark.svg" alt=""></a>
+    <a [routerLink]="['/home']"><img id="seta-light" src="../../../assets/conta-criada/seta-light.svg" alt=""></a>
+  </div>
+</div>
+<div class="container col-md-6">
+
+
+  <div class="form-container">
+    <h2>Depósito Bancário</h2>
+    <form [formGroup]="formulario" (submit)="enviar()" class="">
+      <div class="input-group">
+        <label for="valor">Valor:</label>
+        <input type="tel"
+        class="rounded shadow-sm"
+         currencyMask
+         [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left', allowNegative: false, max: 50000 , min: 0.01}" 
+         id="valor" 
+         formControlName="valor" 
+         placeholder="Digite o valor a ser depositado" 
+         required>
+      </div>
+      <div class="input-group">
+        <label for="descricao">Descrição:</label>
+        <input type="text"
+        class="rounded shadow-sm" 
+        id="descricao" 
+        formControlName="descricao" 
+        placeholder="Digite uma breve descrição (opcional)">
+      </div>
+      <button class="shadow-sm mt-5" type="submit">Realizar Depósito</button>
+    </form>
+  </div>
+</div>
+
+ <!--<div class="list-container">
+    <h2>Lista de Depósitos</h2>
+    <table>
+      <tr *ngFor="let deposito of depositos">
+        <td>{{ deposito.descricao }}</td>
+        <td>{{ deposito.valor }}</td>
+        <td>{{ deposito.horario | date: 'dd/MM/yyyy' }}</td>
+      </tr>
+    </table>
+  </div>
+</div> -->

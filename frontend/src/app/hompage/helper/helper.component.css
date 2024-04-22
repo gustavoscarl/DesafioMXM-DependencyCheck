@@ -1,0 +1,18 @@
+@media (prefers-color-scheme: dark) {
+  * {
+    background-color: #141414;
+    color: #fff;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #e5e5e5;
+    color: #000000;
+  }
+}
+
+img:hover {
+  transition-duration: 400ms;
+  transform: scale(1.02);
+}
