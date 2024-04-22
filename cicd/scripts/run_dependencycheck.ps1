@@ -1,5 +1,5 @@
 # Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report
-$report = Get-Content -Path "./cicd/dependency-check-report/dependency-check-report.json" | ConvertFrom-Json
+$report = Get-Content -Path "./cicd/dependency-check-report-backend/dependency-check-report.json" | ConvertFrom-Json
 
 # Sinalizadores de severidades das vulnerabilidades
 $lowLevel = $false
