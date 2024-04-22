@@ -34,10 +34,12 @@ jobs:
 
       - name: Commit Dependency-Check Reports
         run: |
+          git fetch --all
+          git switch main
           git checkout main
           git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --local user.name "${{ secrets.GIT_USER_NAME }}"
-          git add ./cicd/dependency-check-report-frontend/*
+          git add ./cicd/dependency-check-report-backend/*
           git commit -m "Add Dependency Check Reports"
           git push origin main
 
