@@ -51,7 +51,6 @@ jobs:
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
-        if: github.workflow == 'Dependency Check on Backend'
         run: .\cicd\scripts\run_dependencycheck.ps1 -ReportPath "./cicd/dependency-check-report-backend/dependency-check-report.json"
 
       - name: Fail Build if High or Critical Vulnerabilities Found
