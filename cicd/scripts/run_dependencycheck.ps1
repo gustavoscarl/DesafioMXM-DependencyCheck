@@ -2,7 +2,7 @@ param (
   [string]$ReportPath
 )
 
-# Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report.
+# Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável report
 $report = Get-Content -Path $ReportPath | ConvertFrom-Json
 
 # Sinalizadores de severidades das vulnerabilidades
