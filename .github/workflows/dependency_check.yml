@@ -31,16 +31,6 @@ jobs:
         if: github.workflow == 'Dependency Check on Frontend'
         run: echo "DEP_CHECK_PATH=./cicd/dependency-check-report-frontend/dependency-check-report.json" >> $GITHUB_ENV
 
-      - name: Cache NVD Database
-        uses: actions/cache@v4
-        id: cache-nvd
-        with:
-          path: |
-            dependency-check/data
-          key: nvd-${{ hashFiles('**/*.cs', '**/*.csproj') }}-${{ github.run_number }}
-          restore-keys: |
-            nvd-
-
       - name: Download Dependency-Check
         run: |
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
@@ -50,14 +40,15 @@ jobs:
         run: |
           .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PayWiseBackend" --out "./cicd/dependency-check-report-backend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-backend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
-      - name: Cache Dependency Check Reports and Data Post-Scan
+      - name: Cache NVD Database
         uses: actions/cache@v4
-        if: always()
+        id: cache-nvd
         with:
           path: |
             dependency-check/data
-            dependency-check-reports
-          key: post-scan-${{ hashFiles('**/*.cs', '**/*.csproj') }}-${{ github.run_number }}" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-backend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          key: nvd-${{ hashFiles('**/*.cs', '**/*.csproj') }}-${{ github.run_number }}
+          restore-keys: |
+            nvd-
 
       - name: Commit Dependency-Check Reports
         run: |
