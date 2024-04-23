@@ -41,11 +41,11 @@ jobs:
           restore-keys: |
             nvd-
 
-      - name: Download Dependency-Check CLI
-        if: steps.cache-nvd.outputs.cache-hit != 'true'
+      - name: Download and Setup Dependency Check
         run: |
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
+          Get-ChildItem -Path "." -Directory # This will list directories to debug
           Move-Item -Path "dependency-check-9.1.0" -Destination "dependency-check"
 
       - name: Run Dependency-Check CLI
