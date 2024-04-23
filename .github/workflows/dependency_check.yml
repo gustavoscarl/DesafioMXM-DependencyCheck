@@ -39,7 +39,7 @@ jobs:
             dependency-check
           key: nvd-${{ hashFiles('**/*.cs', '**/*.csproj') }}-dpcheck
           restore-keys: |
-            nvd-${{ hashFiles('**/*.cs', '**/*.csproj') }} -dpcheck
+            nvd-${{ hashFiles('**/*.cs', '**/*.csproj') }}-dpcheck
             nvd-
 
       - name: Log Cache Hit Status
