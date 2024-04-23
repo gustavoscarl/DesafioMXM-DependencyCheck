@@ -34,15 +34,14 @@ jobs:
 
       - name: Commit Dependency-Check Reports
         run: |
-          git fetch --all
-          if ("${{ github.event_name }}" = 'pull_request') {
+          git fetch all
+          $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             git checkout main
-            git switch main
-          } else {
+            git switch main } else {
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
             git checkout $branch_name
-            git switch $branch_name
-          }
+            git switch $branch_name }
           git add ./cicd/dependency-check-report-backend/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
