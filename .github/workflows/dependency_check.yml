@@ -31,10 +31,32 @@ jobs:
         if: github.workflow == 'Dependency Check on Frontend'
         run: echo "DEP_CHECK_PATH=./cicd/dependency-check-report-frontend/dependency-check-report.json" >> $GITHUB_ENV
 
+      - name: Cache Dependency Check
+        uses: actions/cache@v4
+        id: cache-dependency-check
+        with:
+          path: |
+            dependency-check
+          key: dependency-check-${{ hashFiles('**/dependency-check-*.zip') }}
+          restore-keys: |
+            dependency-check-
+
       - name: Download Dependency-Check
+        if: steps.cache-dependency-check.outputs.cache-hit != 'true'
         run: |
-          Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
+          $url = "https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.0/dependency-check-6.5.0-release.zip"
+          Invoke-WebRequest -Uri $url -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
+          Move-Item -Path "dependency-check-6.5.0" -Destination "dependency-check"
+
+      - name: Cache NVD Database
+        uses: actions/cache@v2
+        with:
+          path: |
+            dependency-check\data
+          key: nvd-${{ hashFiles('**/pom.xml') }}-${{ github.run_number }}
+          restore-keys: |
+            nvd-
 
       - name: Run Dependency-Check Scan
         run: |
