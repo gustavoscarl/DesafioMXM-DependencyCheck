@@ -23,14 +23,6 @@ jobs:
           distribution: "temurin"
           java-version: "11"
 
-      - name: Set Path for Backend
-        if: github.workflow == 'Dependency Check on Backend'
-        run: echo "DEP_CHECK_PATH=./cicd/dependency-check-report-backend/dependency-check-report.json" >> $GITHUB_ENV
-
-      - name: Set Path for Frontend
-        if: github.workflow == 'Dependency Check on Frontend'
-        run: echo "DEP_CHECK_PATH=./cicd/dependency-check-report-frontend/dependency-check-report.json" >> $GITHUB_ENV
-
       - name: Cache NVD Database
         uses: actions/cache@v4
         id: cache-nvd
@@ -79,12 +71,3 @@ jobs:
         if: steps.check_vulnerabilities.outputs.vulnerable != 'true' && steps.check_vulnerabilities.outputs.warn == 'true'
         run: .\cicd\scripts\low_medium_vulnefound.ps1 -lowLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -mediumLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
         shell: pwsh
-
-      - name: Post Cache NVD Save
-        uses: actions/cache/save@v4
-        if: always()
-        with:
-          path: |
-            dependency-check
-          key: nvd-owasp123-dpcheck-mxm
-          restore-keys: nvd-owasp123-dpcheck-mxm

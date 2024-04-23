@@ -23,6 +23,16 @@ jobs:
           distribution: "temurin"
           java-version: "11"
 
+      - name: Cache NVD Database
+        uses: actions/cache@v4
+        id: cache-nvd
+        if: always()
+        with:
+          path: |
+            dependency-check
+          key: nvd-owasp123-dpcheck-mxm
+          restore-keys: nvd-owasp123-dpcheck-mxm
+
       - name: Download Dependency-Check
         run: |
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
