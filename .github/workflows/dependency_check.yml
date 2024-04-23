@@ -71,3 +71,11 @@ jobs:
         if: steps.check_vulnerabilities.outputs.vulnerable != 'true' && steps.check_vulnerabilities.outputs.warn == 'true'
         run: .\cicd\scripts\low_medium_vulnefound.ps1 -lowLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -mediumLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
         shell: pwsh
+
+      - name: Post Cache Database Save
+        uses: actions/cache/save@v3
+        if: always()
+        with:
+          path: |
+            dependency-check
+          key: nvd-owasp123-dpcheck-mxm
