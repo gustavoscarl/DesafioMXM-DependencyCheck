@@ -32,7 +32,7 @@ jobs:
         run: echo "DEP_CHECK_PATH=./cicd/dependency-check-report-frontend/dependency-check-report.json" >> $GITHUB_ENV
 
       - name: Cache NVD Database
-        uses: actions/cache@v4
+        uses: actions/cache/save@v4
         id: cache-nvd
         if: always()
         with:
@@ -40,10 +40,6 @@ jobs:
             dependency-check
           key: nvd-owasp123-dpcheck-mxm
           restore-keys: nvd-owasp123-dpcheck-mxm
-
-      - name: Log Cache Hit Status
-        run: |
-          echo "Cache hit status: ${{ steps.cache-nvd.outputs.cache-hit }}"
 
       - name: Download Dependency-Check
         if: ${{ steps.cache-nvd.outputs.cache-hit != 'true' }}
