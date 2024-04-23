@@ -34,7 +34,7 @@ jobs:
 
       - name: Commit Dependency-Check Reports
         run: |
-          git fetch all
+          git fetch --all
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             git checkout main
