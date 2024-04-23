@@ -38,9 +38,11 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
 
-      - name: Run Dependency-Check Scan
+      - name: Download Dependency-Check
+        if: ${{ steps.cache-nvd.outputs.cache-hit != 'true' }}
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "PayWiseFrontend" --scan "./frontend" --out "./cicd/dependency-check-report-frontend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-frontend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
+          Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
 
       - name: Commit Dependency-Check Reports
         run: |
