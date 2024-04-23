@@ -41,7 +41,7 @@ jobs:
 
       - name: Run Dependency-Check CLI
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PayWiseBackend" --out "./cicd/dependency-check-report-backend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-backend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "PayWiseFrontend" --scan "./frontend" --out "./cicd/dependency-check-report-frontend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-frontend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
       - name: Commit Dependency-Check Reports
         run: |
