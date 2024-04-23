@@ -48,7 +48,7 @@ jobs:
 
       - name: Run Dependency-Check CLI
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PayWiseBackend" --out "./dependency-check-reports" --format "HTML" --format "JSON" --suppression "./dependency-check-suppression.xml" --nvdApiKey "${{ secrets.NVD_API_KEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PayWiseBackend" --out "./dependency-check-reports" --format "HTML" --format "JSON" --suppression "./dependency-check-suppression.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
       - name: Cache Dependency Check Reports and Data Post-Scan
         uses: actions/cache@v2
