@@ -44,13 +44,11 @@ jobs:
       - name: Download Dependency-Check
         if: steps.cache-dependency-check.outputs.cache-hit != 'true'
         run: |
-          $url = "https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.0/dependency-check-6.5.0-release.zip"
-          Invoke-WebRequest -Uri $url -OutFile "dependency-check.zip"
+          Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
-          Move-Item -Path "dependency-check-6.5.0" -Destination "dependency-check"
 
       - name: Cache NVD Database
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             dependency-check\data
