@@ -46,6 +46,7 @@ jobs:
           git add ./cicd/dependency-check-report-backend/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
+        shell: pwsh
 
       - name: Vulnerabilities Report
         id: check_vulnerabilities
