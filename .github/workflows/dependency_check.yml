@@ -43,7 +43,7 @@ jobs:
             nvd-
 
       - name: Download Dependency-Check
-        if: steps.cache-nvd.outputs.cache-hit != true
+        if: steps.cache-nvd.outputs.cache-hit != 'true'
         run: |
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
