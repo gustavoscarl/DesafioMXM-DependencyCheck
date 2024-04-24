@@ -46,6 +46,8 @@ jobs:
       - name: Commitar Relatórios do Dependency Check
         run: |
           git fetch --all
+          git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
+          git config --local user.name "${{ secrets.GIT_USER_NAME }}"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             git checkout main
