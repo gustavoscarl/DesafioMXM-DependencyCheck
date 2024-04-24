@@ -67,8 +67,8 @@ foreach ($dependencia in $relatorio.dependencies) {
   # Caso dependencia tenha o objeto 'vulnerabilities', irá parsear as informações do JSON convertido.
   if ($dependencia.vulnerabilities) {
     # Foreach para parsear a severidade maior de cada dependencia, utilizando de variavel auxiliar $severidadeMaiorRotulo. $severidadesNiveis[$vuln.severity] faz com que a severidade atual seja incluída no dicionário, definindo seu valor número a partir da string ('BAIXO','MEDIO', etc). $severidadesRotulosPtBr faz com que a severidade atual seja traduzida para PT-BR.
-    $severidadesNiveis = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'VERY_HIGH' = 3; 'CRITICAL' = 4 }
-    $severidadesRotulosPtBr = @{ 'LOW' = 'BAIXO'; 'MEDIUM' = 'MÉDIO'; 'HIGH' = 'ALTO'; 'VERY_HIGH' = 'ALTISSIMO'; 'CRITICAL' = 'CRÍTICO' }
+    $severidadesNiveis = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'HIGHEST' = 3; 'CRITICAL' = 4 }
+    $severidadesRotulosPtBr = @{ 'LOW' = 'BAIXO'; 'MEDIUM' = 'MÉDIO'; 'HIGH' = 'ALTO'; 'HIGHEST' = 'ALTÍSSIMO'; 'CRITICAL' = 'CRÍTICO' }
     
     foreach ($vuln in $dependencia.vulnerabilities) {
       $severidadeAtual = $severidadesNiveis[$vuln.severity]
@@ -104,7 +104,7 @@ foreach ($dependencia in $relatorio.dependencies) {
 
     $totalEvidencias = $evidencia.vendorEvidence.Count + $evidencia.productEvidence.Count + $evidencia.versionEvidence.Count
 
-    $traducoesConfianca = @{'LOW' = 'BAIXO'; 'MEDIUM' = 'MÉDIO'; 'HIGH' = 'ALTO'; 'HIGHEST' = 'MÁXIMO'; 'CRITICAL' = 'CRÍTICO' }
+    $traducoesConfianca = @{'LOW' = 'BAIXO'; 'MEDIUM' = 'MÉDIO'; 'HIGH' = 'ALTO'; 'HIGHEST' = 'ALTÍSSIMO'; 'CRITICAL' = 'CRÍTICO' }
     
     if ($dependencia.vulnerabilityIds -and $dependencia.vulnerabilityIds.Count -gt 0) {
       $confianca = $dependencia.vulnerabilityIds[0].Confidence
