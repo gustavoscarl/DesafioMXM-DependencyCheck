@@ -1,4 +1,4 @@
-name: Dependency Check on Backend
+name: Dependency Check no Backend
 
 on:
   push:
@@ -14,38 +14,57 @@ jobs:
   dependency-check:
     runs-on: windows-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Código
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Instalar Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "11"
 
-      - name: Cache NVD Database
+      - name: Cachear Arquivos NVD
         uses: actions/cache@v4
         id: cache-nvd
-        if: always()
         with:
+          save-always: true
           path: |
             dependency-check
           key: nvd-owasp123-dpcheck-mxm
           restore-keys: nvd-owasp123-dpcheck-mxm
 
-      - name: Download Dependency-Check
+      - name: Extrair o Nome da Branch
+        shell: pwsh
+        run: |
+          $branch = ""
+          if ([string]::IsNullOrEmpty($branch)) { 
+              $branch = "${{ github.ref }}".Replace("refs/heads/", "") 
+          } else { 
+              $branch = "main"
+          }
+          echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
+        id: extrair_branch
+
+      - name: Instalar Dependency-Check
         if: ${{ steps.cache-nvd.outputs.cache-hit != 'true' }}
         run: |
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
 
-      - name: Run Dependency-Check CLI
+      - name: Executar Dependency Check CLI Scan
+        env:
+          NOME_PROJETO: PayWiseBackend
+          SCANEAR_CAMINHO: ./PayWiseBackend
+          RESULTADO_CAMINHO: ./.cicd/dependency-check-report-backend
+          ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-backend.xml
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PayWiseBackend" --out "./cicd/dependency-check-report-backend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-backend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
-      - name: Commit Dependency-Check Reports
+      - name: Commitar Relatórios do Dependency Check
         run: |
           git fetch --all
+          git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
+          git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             git checkout main
@@ -53,21 +72,29 @@ jobs:
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
             git checkout $branch_name
             git switch $branch_name }
-          git add ./cicd/dependency-check-report-backend/*
+          git add ./.cicd/dependency-check-report-backend/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
         shell: pwsh
 
-      - name: Vulnerabilities Report
-        id: check_vulnerabilities
-        run: .\cicd\scripts\run_dependencycheck.ps1 -ReportPath "./cicd/dependency-check-report-backend/dependency-check-report.json"
+      - name: Relatório de Vulnerabilidade
+        id: checar_vulnerabilidades
+        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./.cicd/dependency-check-report-backend/dependency-check-report.json"
 
-      - name: Fail Build if High or Critical Vulnerabilities Found
-        if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
-        run: .\cicd\scripts\high_critical_vulnefound.ps1 -highLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -criticalLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
+      - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
+        if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
+        env:
+          BRANCH_NAME: $(echo ${{ github.ref }} | sed 's|refs/heads/||')"
+          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-backend.xml
+          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-backend"
+        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
         shell: pwsh
 
-      - name: Handle Low and Medium Level Vulnerabilities
-        if: steps.check_vulnerabilities.outputs.vulnerable != 'true' && steps.check_vulnerabilities.outputs.warn == 'true'
-        run: .\cicd\scripts\low_medium_vulnefound.ps1 -lowLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -mediumLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
+      - name: Lidar com Vulnerabilidades de Baixo e Médio nível
+        if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
+        env:
+          BRANCH_NAME: $(echo ${{ github.ref }} | sed 's|refs/heads/||')"
+          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ env.BRANCH_NAME }}/.cicd/dependency-check-config/suppression-backend.xml
+          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ env.BRANCH_NAME }}/.cicd/dependency-check-report-backend"
+        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
         shell: pwsh
