@@ -40,8 +40,13 @@ jobs:
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
 
       - name: Executar Dependency Check CLI Scan
+        env:
+          NOME_PROJETO: PayWiseFrontend
+          SCANEAR_CAMINHO: ./frontend
+          RESULTADO_CAMINHO: ./.cicd/dependency-check-report-frontend
+          ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-frontend.xml
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "PayWiseFrontend" --scan "./frontend" --out "./.cicd/dependency-check-report-frontend" --format "HTML" --format "JSON" --suppression "./.cicd/dependency-check-config/suppression-frontend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
       - name: Commitar Relatórios do Dependency Check
         run: |
