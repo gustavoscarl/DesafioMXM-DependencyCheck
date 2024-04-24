@@ -41,7 +41,7 @@ jobs:
 
       - name: Executar Dependency Check CLI Scan
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PayWiseBackend" --out "./cicd/dependency-check-report-backend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-backend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "PayWiseBackend" --scan "./PayWiseBackend" --out "./.cicd/dependency-check-report-backend" --format "HTML" --format "JSON" --suppression "./.cicd/dependency-check-config/suppression-backend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
       - name: Commitar Relatórios do Dependency Check
         run: |
@@ -53,21 +53,21 @@ jobs:
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
             git checkout $branch_name
             git switch $branch_name }
-          git add ./cicd/dependency-check-report-backend/*
+          git add ./.cicd/dependency-check-report-backend/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
         shell: pwsh
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
-        run: .\cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./cicd/dependency-check-report-backend/dependency-check-report.json"
+        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./.cicd/dependency-check-report-backend/dependency-check-report.json"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
-        run: .\cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}"
+        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}"
         shell: pwsh
 
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
         if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
-        run: .\cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}"
+        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}"
         shell: pwsh
