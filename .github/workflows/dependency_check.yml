@@ -36,11 +36,9 @@ jobs:
       - name: Extrair o Nome da Branch
         shell: pwsh
         run: |
-          $branch = ""
-          if ([string]::IsNullOrEmpty($branch)) { 
-              $branch = "${{ github.ref }}".Replace("refs/heads/", "") 
-          } else { 
-              $branch = "main"
+          $branch = "${{ github.head_ref }}".Replace("refs/heads/", "")
+          if ($branch -eq "merge") { 
+            $branch = "main" 
           }
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
         id: extrair_branch
