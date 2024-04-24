@@ -42,12 +42,12 @@ $versaoRelatorio = $relatorio.scanInfo.engineVersion
 
 Write-Output "`n"
 
-Write-Output "Detalhes de Relatorio:"
+Write-Output "Detalhes de Relatório:"
 
 Write-Output "`n"
 
 Write-Output "Versão Dependency Check: $versaoRelatorio"
-Write-Output "Data de Relatorio: $dataFormatada"
+Write-Output "Data de Relatório: $dataFormatada"
 Write-Output "Nome do Projeto: $nomeRelatorio"
 
 Write-Output "`n"
