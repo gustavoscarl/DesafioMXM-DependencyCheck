@@ -1,4 +1,4 @@
-name: Dependency Check on Frontend
+name: Dependency Check no Frontend
 
 on:
   push:
@@ -14,16 +14,16 @@ jobs:
   dependency-check:
     runs-on: windows-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Código
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Instalar Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "11"
 
-      - name: Cache NVD Database
+      - name: Cachear Arquivos NVD
         uses: actions/cache@v4
         id: cache-nvd
         if: always()
@@ -33,17 +33,17 @@ jobs:
           key: nvd-owasp123-dpcheck-mxm
           restore-keys: nvd-owasp123-dpcheck-mxm
 
-      - name: Download Dependency-Check
+      - name: Instalar Dependency-Check
         if: ${{ steps.cache-nvd.outputs.cache-hit != 'true' }}
         run: |
           Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
 
-      - name: Run Dependency-Check CLI
+      - name: Executar Dependency Check CLI Scan
         run: |
           .\dependency-check\bin\dependency-check.bat --project "PayWiseFrontend" --scan "./frontend" --out "./cicd/dependency-check-report-frontend" --format "HTML" --format "JSON" --suppression "./cicd/dependency-check-config/suppression-frontend.xml" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
-      - name: Commit Dependency-Check Reports
+      - name: Commitar Relatórios do Dependency Check
         run: |
           git fetch --all
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
@@ -53,21 +53,21 @@ jobs:
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
             git checkout $branch_name
             git switch $branch_name }
-          git add ./cicd/dependency-check-report-backend/*
+          git add ./cicd/dependency-check-report-frontend/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
         shell: pwsh
 
-      - name: Vulnerabilities Report
-        id: check_vulnerabilities
+      - name: Relatório de Vulnerabilidade
+        id: checar_vulnerabilidades
         run: .\cicd\scripts\run_dependencycheck.ps1 -ReportPath "./cicd/dependency-check-report-frontend/dependency-check-report.json"
 
-      - name: Fail Build if High or Critical Vulnerabilities Found
-        if: ${{ steps.check_vulnerabilities.outputs.vulnerable == 'true' }}
-        run: .\cicd\scripts\high_critical_vulnefound.ps1 -highLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -criticalLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
+      - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
+        if: ${{ steps.checar_vulnerabilidades.outputs.vulnerable == 'true' }}
+        run: .\cicd\scripts\high_critical_vulnefound.ps1 -highLevel "${{ steps.checar_vulnerabilidades.outputs.highLevel }}" -criticalLevel "${{ steps.checar_vulnerabilidades.outputs.criticalLevel }}"
         shell: pwsh
 
-      - name: Handle Low and Medium Level Vulnerabilities
-        if: steps.check_vulnerabilities.outputs.vulnerable != 'true' && steps.check_vulnerabilities.outputs.warn == 'true'
-        run: .\cicd\scripts\low_medium_vulnefound.ps1 -lowLevel "${{ steps.check_vulnerabilities.outputs.highLevel }}" -mediumLevel "${{ steps.check_vulnerabilities.outputs.criticalLevel }}"
+      - name: Lidar com Vulnerabilidades de Baixo e Médio nível
+        if: steps.checar_vulnerabilidades.outputs.vulnerable != 'true' && steps.checar_vulnerabilidades.outputs.warn == 'true'
+        run: .\cicd\scripts\low_medium_vulnefound.ps1 -lowLevel "${{ steps.checar_vulnerabilidades.outputs.highLevel }}" -mediumLevel "${{ steps.checar_vulnerabilidades.outputs.criticalLevel }}"
         shell: pwsh
