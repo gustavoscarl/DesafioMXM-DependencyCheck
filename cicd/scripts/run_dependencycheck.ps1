@@ -66,19 +66,22 @@ foreach ($dependencia in $relatorio.dependencies) {
   
   # Caso dependencia tenha o objeto 'vulnerabilities', irá parsear as informações do JSON convertido.
   if ($dependencia.vulnerabilities) {
-    # Foreach para parsear a severidade maior de cada dependencia, utilizando de variavel auxiliar $severidadeMaiorRotulo. $severidadesNiveis[$vuln.severity] faz com que a severidade atual seja incluída no dicionário, definindo seu valor número a partir da string ('BAIXO','MEDIO', etc).
+    # Foreach para parsear a severidade maior de cada dependencia, utilizando de variavel auxiliar $severidadeMaiorRotulo. $severidadesNiveis[$vuln.severity] faz com que a severidade atual seja incluída no dicionário, definindo seu valor número a partir da string ('BAIXO','MEDIO', etc). $severidadesRotulosPtBr faz com que a severidade atual seja traduzida para PT-BR.
+    $severidadesNiveis = @{ 'LOW' = 0; 'MEDIUM' = 1; 'HIGH' = 2; 'VERY_HIGH' = 3; 'CRITICAL' = 4 }
+    $severidadesRotulosPtBr = @{ 'LOW' = 'BAIXO'; 'MEDIUM' = 'MÉDIO'; 'HIGH' = 'ALTO'; 'VERY_HIGH' = 'ALTISSIMO'; 'CRITICAL' = 'CRÍTICO' }
+    
     foreach ($vuln in $dependencia.vulnerabilities) {
       $severidadeAtual = $severidadesNiveis[$vuln.severity]
       if ($severidadeAtual -gt $severidadeMaior) {
         $severidadeMaior = $severidadeAtual
-        $severidadeMaiorRotulo = $vuln.severity
+        $severidadeMaiorRotulo = $severidadesRotulosPtBr[$vuln.severity]
       }
-
-      if ($vuln.severity -eq 'BAIXO') {
+    
+      if ($vuln.severity -eq 'LOW') {
         $baixoNivel = $true
         $aviso = $true
       }
-      if ($vuln.severity -eq 'MEDIO') {
+      if ($vuln.severity -eq 'MEDIUM') {
         $medioNivel = $true
         $aviso = $true
       }
@@ -86,11 +89,10 @@ foreach ($dependencia in $relatorio.dependencies) {
         $altoNivel = $true
         $vulnerabilidade = $true
       }
-      if ($vuln.severity -eq 'CRITICO') {
+      if ($vuln.severity -eq 'CRITICAL') {
         $criticoNivel = $true
         $vulnerabilidade = $true
       }
-
     }
 
     # Transforma todos os CPES dentro de relatorio.dependencies.vulnerabilities.vulnerableSoftware.software.id e transforma seleciona ao final somente os com nome únicos
