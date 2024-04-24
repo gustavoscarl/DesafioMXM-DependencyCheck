@@ -3,7 +3,7 @@ param (
   [string]$criticoNivel
 )
 
-Write-Output "Vulnerabilities found, failing the build."
+Write-Output "Vulnerabilidades Alta ou Críticas encontradas, falhando a build."
 Write-Output "`n"
 if ($altoNivel -eq "true") {
   Write-Output "[FALHA] Vulnerabilidades de Alta Gravidade encontradas."
