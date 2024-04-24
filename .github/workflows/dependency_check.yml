@@ -38,7 +38,7 @@ jobs:
         run: |
           $branch = ""
           if ([string]::IsNullOrEmpty($branch)) { 
-              $branch = "refs/heads/main".Replace("refs/heads/", "") 
+              $branch = "${{ github.ref }}".Replace("refs/heads/", "") 
           } else { 
               $branch = "main"
           }
