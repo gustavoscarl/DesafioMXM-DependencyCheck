@@ -88,7 +88,7 @@ jobs:
         shell: pwsh
 
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
-        if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
+        if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
         env:
           LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-backend.xml
           LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-backend"
