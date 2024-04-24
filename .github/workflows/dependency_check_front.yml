@@ -33,6 +33,14 @@ jobs:
           key: nvd-owasp123-dpcheck-mxm
           restore-keys: nvd-owasp123-dpcheck-mxm
 
+      - name: Extrair o Nome da Branch
+        shell: pwsh
+        run: |
+          $branch = "${{ github.head_ref }}"
+          if (-z $branch) { $branch = "${{ github.ref }}".Replace("refs/heads/", "") } else { $branch = "main"}
+          echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
+        id: extrair_branch
+
       - name: Instalar Dependency-Check
         if: ${{ steps.cache-nvd.outputs.cache-hit != 'true' }}
         run: |
@@ -52,7 +60,7 @@ jobs:
         run: |
           git fetch --all
           git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
-          git config --local user.name "${{ secrets.GIT_USER_NAME }}"
+          git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             git checkout main
@@ -82,7 +90,7 @@ jobs:
         if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
         env:
           BRANCH_NAME: $(echo ${{ github.ref }} | sed 's|refs/heads/||')"
-          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ env.BRANCH_NAME }}/.cicd/dependency-check-config/suppression-frontend.xml
-          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ env.BRANCH_NAME }}/.cicd/dependency-check-report-frontend"
+          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-frontend.xml
+          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-frontend"
         run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
         shell: pwsh
