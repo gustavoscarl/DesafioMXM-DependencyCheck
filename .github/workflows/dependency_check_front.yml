@@ -82,16 +82,14 @@ jobs:
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
         env:
-          BRANCH_NAME: $(echo ${{ github.ref }} | sed 's|refs/heads/||')"
-          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ env.BRANCH_NAME }}/.cicd/dependency-check-config/suppression-frontend.xml
-          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ env.BRANCH_NAME }}/.cicd/dependency-check-report-frontend"
+          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-frontend.xml
+          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-frontend"
         run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
         shell: pwsh
 
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
         if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
         env:
-          BRANCH_NAME: $(echo ${{ github.ref }} | sed 's|refs/heads/||')"
           LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-frontend.xml
           LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-frontend"
         run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
