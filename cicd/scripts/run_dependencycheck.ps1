@@ -106,19 +106,19 @@ foreach ($dependencia in $relatorio.dependencies) {
       $primeiraConfiancaVulnerabilidade = $dependencia.vulnerabilityIds[0].Confidence
     }
     else {
-      $primeiraConfiancaVulnerabilidade = "No Vulnerability IDs Found"
+      $primeiraConfiancaVulnerabilidade = "Nenhum ID de Vulnerabilidades Encontrados."
     }
 
 
     
     Write-Output "===================================================="
-    Write-Output "Dependency: $($dependencia.fileName)"
-    Write-Output "Vulnerability IDs: $($cpeList -join ', ')"
-    Write-Output "Package: $($dependencia.packages.id)"
-    Write-Output "Highest Severity: $severidadeMaiorRotulo"
-    Write-Output "CVE Count: $totalCVEs"
-    Write-Output "CPE Confidence: $primeiraConfiancaVulnerabilidade"
-    Write-Output "Total Evidence: $totalEvidencias"
+    Write-Output "Dependência: $($dependencia.fileName)"
+    Write-Output "IDs de Vulnerabilidade: $($cpeList -join ', ')"
+    Write-Output "Pacotes: $($dependencia.packages.id)"
+    Write-Output "Maior Gravidade: $severidadeMaiorRotulo"
+    Write-Output "Quantidade de CVEs: $totalCVEs"
+    Write-Output "Confiança de CPE: $primeiraConfiancaVulnerabilidade"
+    Write-Output "Evidências Totais: $totalEvidencias"
 
   }
 }
