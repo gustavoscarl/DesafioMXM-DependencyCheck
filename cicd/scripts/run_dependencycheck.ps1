@@ -104,11 +104,14 @@ foreach ($dependencia in $relatorio.dependencies) {
 
     $totalEvidencias = $evidencia.vendorEvidence.Count + $evidencia.productEvidence.Count + $evidencia.versionEvidence.Count
 
+    $traducoesConfianca = @{'LOW' = 'BAIXO'; 'MEDIUM' = 'MÉDIO'; 'HIGH' = 'ALTO'; 'HIGHEST' = 'MÁXIMO'; 'CRITICAL' = 'CRÍTICO' }
+    
     if ($dependencia.vulnerabilityIds -and $dependencia.vulnerabilityIds.Count -gt 0) {
-      $primeiraConfiancaVulnerabilidade = $dependencia.vulnerabilityIds[0].Confidence
+      $confianca = $dependencia.vulnerabilityIds[0].Confidence
+      $primeiraConfiancaVulnerabilidade = $traducoesConfianca[$confianca]
     }
     else {
-      $primeiraConfiancaVulnerabilidade = "Nenhum ID de Vulnerabilidades Encontrados."
+      $primeiraConfiancaVulnerabilidade = "Nenhum ID de Vulnerabilidades Encontrado."
     }
 
 
