@@ -26,8 +26,8 @@ jobs:
       - name: Cachear Arquivos NVD
         uses: actions/cache@v4
         id: cache-nvd
-        if: always()
         with:
+          save-always: true
           path: |
             dependency-check
           key: nvd-owasp123-dpcheck-mxm
