@@ -63,11 +63,11 @@ jobs:
         run: .\cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./cicd/dependency-check-report-frontend/dependency-check-report.json"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
-        if: ${{ steps.checar_vulnerabilidades.outputs.vulnerable == 'true' }}
-        run: .\cicd\scripts\high_critical_vulnefound.ps1 -highLevel "${{ steps.checar_vulnerabilidades.outputs.highLevel }}" -criticalLevel "${{ steps.checar_vulnerabilidades.outputs.criticalLevel }}"
+        if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
+        run: .\cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}"
         shell: pwsh
 
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
-        if: steps.checar_vulnerabilidades.outputs.vulnerable != 'true' && steps.checar_vulnerabilidades.outputs.warn == 'true'
-        run: .\cicd\scripts\low_medium_vulnefound.ps1 -lowLevel "${{ steps.checar_vulnerabilidades.outputs.highLevel }}" -mediumLevel "${{ steps.checar_vulnerabilidades.outputs.criticalLevel }}"
+        if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
+        run: .\cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}"
         shell: pwsh
