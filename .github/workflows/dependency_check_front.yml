@@ -60,7 +60,7 @@ jobs:
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
-        run: .\cicd\scripts\run_dependencycheck.ps1 -ReportPath "./cicd/dependency-check-report-frontend/dependency-check-report.json"
+        run: .\cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./cicd/dependency-check-report-frontend/dependency-check-report.json"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerable == 'true' }}

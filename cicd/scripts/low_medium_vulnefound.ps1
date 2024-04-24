@@ -1,14 +1,14 @@
 param (
-  [string]$lowLevel,
-  [string]$mediumLevel
+  [string]$baixoNivel,
+  [string]$medioNivel
 )
 
-Write-Warning "Low or Medium Vulnerabilities found, please be careful."
+Write-Warning "Vulnerabilidades Baixas ou Médias encontradas, por favor, tenha cuidado."
 Write-Output "`n"
-if ($lowLevel -eq "true") {
-  Write-Warning "LOW Severity Vulnerabilities Found."
+if ($baixoNivel -eq "true") {
+  Write-Warning "Vulnerabilidades de Baixa Gravidade encontradas."
 }
-if ($mediumLevel -eq "true") {
-  Write-Warning "MEDIUM Severity Vulnerabilities Found."
+if ($medioNivel -eq "true") {
+  Write-Warning "Vulnerabilidades de Gravidade Média encontradas."
 }
-Write-Output "Check and update your packages to fix security. If you think that this is a mistake, contact the team at 'gustavo@gmail.com'.`nTo add vulnerabilities to suppression list (false positive list) you can set on ./cicd/dependency-check-config/suppression-XXX.xml file. More info on FAQs in this repository README and in the official documentation.`nYou can discover more about OWASP Dependency Check in the official documentation at https://jeremylong.github.io/DependencyCheck/index.html"
+Write-Output "Verifique e atualize seus pacotes para corrigir a segurança do projeto. Se você acha que isso é um erro, entre em contato com a equipe em 'gustavo@gmail.com'.`nPara adicionar vulnerabilidades a lista de supressão (lista de falsos positivos), você pode defini-las em './cicd/dependency-check-config/supplession-xxx.xml'. Mais informações sobre perguntas frequentes podem ser encontradas no README deste repositório e na documentação oficial.`nVoce pode descobrir mais sobre a verificação de dependência da OWASP na documentação oficial em https://jeremylong.github.io/dependencycheck/index.html"
