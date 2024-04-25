@@ -14,9 +14,9 @@ env:
   NOME_PROJETO: PayWiseBackend
   SCANEAR_CAMINHO: ./PayWiseBackend
   RESULTADO_CAMINHO: ./.cicd/dependency-check-report-backend
-  ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/backup-suppression-backend.xml
-  LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-report-backend
-  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-backend.xml
+  ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-backend.xml
+  LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-backend.xml
+  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-report-backend
 
 jobs:
   dependency-check:

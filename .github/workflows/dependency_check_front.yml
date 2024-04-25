@@ -15,8 +15,8 @@ env:
   SCANEAR_CAMINHO: ./frontend
   RESULTADO_CAMINHO: ./.cicd/dependency-check-report-frontend
   ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-frontend.xml
-  LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-report-frontend
-  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-frontend.xml
+  LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-frontend.xml
+  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-report-frontend
 
 jobs:
   dependency-check:
