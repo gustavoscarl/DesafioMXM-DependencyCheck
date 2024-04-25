@@ -73,14 +73,14 @@ jobs:
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
             git checkout $branch_name
             git switch $branch_name }
-          git add ./.cicd/dependency-check-report-frontend/*
+          git add "${{env.RESULTADO_CAMINHO}}"/*
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
         shell: pwsh
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
-        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./.cicd/dependency-check-report-frontend/dependency-check-report.json" -linkRelatorio "${{ env.RESULTADO_CAMINHO }}"
+        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "${{env.RESULTADO_CAMINHO}}/dependency-check-report.json" -linkRelatorio "${{ env.RESULTADO_CAMINHO }}"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
