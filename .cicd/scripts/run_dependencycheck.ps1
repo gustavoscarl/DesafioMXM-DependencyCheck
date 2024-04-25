@@ -1,5 +1,6 @@
 param (
-  [string]$CaminhoRelatorio
+  [string]$CaminhoRelatorio,
+  [string]$linkRelatorio
 )
 
 # Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável relatorio.
@@ -95,7 +96,7 @@ foreach ($dependencia in $relatorio.dependencies) {
       }
     }
 
-    # Transforma todos os CPES dentro de relatorio.dependencies.vulnerabilities.vulnerableSoftware.software.id e transforma seleciona ao final somente os com nome únicos
+    # Transforma todos os CPES dentro de relatorio.dependencies.vulnerabilities.vulnerableSoftware.software.id e seleciona ao final somente os com nome únicos
     $cpeList = $dependencia.vulnerabilities | ForEach-Object { 
       $_.vulnerableSoftware | ForEach-Object { $_.software.id } 
     } | Select-Object -Unique
@@ -130,6 +131,7 @@ foreach ($dependencia in $relatorio.dependencies) {
 if (-not $vulnerabilidade -and -not $aviso) {
   Write-Output "===================================================="
   Write-Output "Nenhuma Vulnerabilidade Encontrada! Veja https://jeremylong.github.io/DependencyCheck/general/hints.html para saber como procurar falsos negativos."
+  Write-Output "Relatório completo em HTML:  $linkRelatorio"
   Write-Output "vulnerabilidade=false" >> $env:GITHUB_OUTPUT
 }
 

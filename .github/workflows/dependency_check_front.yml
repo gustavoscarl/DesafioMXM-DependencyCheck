@@ -77,7 +77,9 @@ jobs:
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
-        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./.cicd/dependency-check-report-frontend/dependency-check-report.json"
+        env:
+          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-frontend"
+        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./.cicd/dependency-check-report-frontend/dependency-check-report.json" -linkRelatorio "${{ env.LINK_RELATORIO }}"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
