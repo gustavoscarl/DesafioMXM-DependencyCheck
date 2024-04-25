@@ -10,6 +10,12 @@ on:
   schedule:
     - cron: "35 10 * * *"
 
+env:
+  NOME_PROJETO: PayWiseFrontend
+  SCANEAR_CAMINHO: ./frontend
+  RESULTADO_CAMINHO: ./.cicd/dependency-check-report-frontend
+  ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-frontend.xml
+
 jobs:
   dependency-check:
     runs-on: windows-latest
@@ -50,11 +56,6 @@ jobs:
           Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
 
       - name: Executar Dependency Check CLI Scan
-        env:
-          NOME_PROJETO: PayWiseFrontend
-          SCANEAR_CAMINHO: ./frontend
-          RESULTADO_CAMINHO: ./.cicd/dependency-check-report-frontend
-          ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-frontend.xml
         run: |
           .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
@@ -77,22 +78,14 @@ jobs:
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
-        env:
-          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-frontend"
-        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./.cicd/dependency-check-report-frontend/dependency-check-report.json" -linkRelatorio "${{ env.LINK_RELATORIO }}"
+        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "./.cicd/dependency-check-report-frontend/dependency-check-report.json" -linkRelatorio "${{ env.RESULTADO_CAMINHO }}"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
-        env:
-          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-frontend.xml
-          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-frontend"
-        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
+        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkSupressao "${{ env.ARQUIVO_SUPRESSAO }}" -linkRelatorio "${{ env.RESULTADO_CAMINHO}}"
         shell: pwsh
 
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
         if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
-        env:
-          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-frontend.xml
-          LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-frontend"
-        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
+        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{ env.ARQUIVO_SUPRESSAO}}" -linkRelatorio "${{ env.RESULTADO_CAMINHO }}"
         shell: pwsh
