@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
         run: |
           $branch = "${{ github.head_ref }}".Replace("refs/heads/", "")
-          if ($branch -eq "merge") { 
+          if ($branch -eq "merge" -or $branch -eq "") { 
             $branch = "main" 
           }
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
