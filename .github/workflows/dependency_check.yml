@@ -54,7 +54,7 @@ jobs:
           NOME_PROJETO: PayWiseBackend
           SCANEAR_CAMINHO: ./PayWiseBackend
           RESULTADO_CAMINHO: ./.cicd/dependency-check-report-backend
-          ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-backend.xml
+          ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/backup-suppression-backend.xml
         run: |
           .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
 
@@ -92,7 +92,7 @@ jobs:
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
         if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
         env:
-          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/backup-suppression-backend.xml
+          LINK_SUPRESSAO: https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/blob/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-config/suppression-backend.xml
           LINK_RELATORIO: "https://github.com/gustavoscarl/DesafioMXM-DependencyCheck/tree/${{ steps.extrair_branch.outputs.branch }}/.cicd/dependency-check-report-backend"
         run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIO }}"
         shell: pwsh
