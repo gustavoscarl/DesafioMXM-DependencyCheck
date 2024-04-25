@@ -84,4 +84,11 @@
    <sha1>20d995c43cc5d163df5e622e894c04cda45165bd</sha1>
    <cpe>cpe:/a:sqlite:sqlite</cpe>
 </suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: SQLitePCLRaw.batteries_v2.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/SQLitePCLRaw\.batteries_v2@.*$</packageUrl>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
 </suppressions>
