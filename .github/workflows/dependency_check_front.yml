@@ -77,7 +77,9 @@ jobs:
             git checkout $branch_name
             git switch $branch_name }
           git add "${{env.RESULTADO_CAMINHO}}/*"
-          git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
+          git commit -m "Adicionando Relatorios
+
+          skip-checks: true"
           git push origin HEAD --force
         shell: pwsh
 
