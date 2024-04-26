@@ -70,21 +70,14 @@ jobs:
           git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
-            git stash push -u
-            git checkout main
-            git switch main
-            git stash pop
-          } else {
-            $branch_name = ${{ github.ref }}.replace('refs/heads/', '')
-            git stash push -u
-            git checkout $branch_name
-            git switch $branch_name
-            git stash pop
-          }
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') { $branch_name = main } 
+            else { $branch_name = ${{ github.ref }}.replace('refs/heads/', '') }
+          git stash push -u
+          git checkout $branch_name
+          git stash pop 
           git add ${{env.RESULTADO_CAMINHO}}/*
           git commit -m "Adicionando Relatorios"
-          git push origin HEAD:main --force
+          git push origin HEAD:$branch_name --force
         shell: pwsh
 
       - name: Relatório de Vulnerabilidade
