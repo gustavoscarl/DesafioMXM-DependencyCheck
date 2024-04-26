@@ -76,7 +76,7 @@ jobs:
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
             git checkout $branch_name
             git switch $branch_name }
-          git add "${{env.RESULTADO_CAMINHO}}"/*
+          git add "${{env.RESULTADO_CAMINHO}}/*"
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
         shell: pwsh
