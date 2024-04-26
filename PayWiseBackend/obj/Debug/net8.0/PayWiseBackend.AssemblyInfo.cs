@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PayWiseBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+46fa880d93eb495f2f89a58b1bbcfa6e20bcc4b9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1f6ed0a3270632bc99af037a56ec493403b19ea6")]
 [assembly: System.Reflection.AssemblyProductAttribute("PayWiseBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PayWiseBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
