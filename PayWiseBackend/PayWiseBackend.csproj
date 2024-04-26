@@ -7,7 +7,7 @@
     <UserSecretsId>ee21bade-5020-4bda-9abc-90ded7f8ebb8</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-      
+       
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="AWSSDK.Core" Version="3.7.303.15" />
     <PackageReference Include="Azure.Core" Version="1.0.0" />
