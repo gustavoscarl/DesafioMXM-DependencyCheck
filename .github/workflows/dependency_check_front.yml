@@ -77,7 +77,7 @@ jobs:
           git stash pop 
           git add ${{env.RESULTADO_CAMINHO}}/*
           git commit -m "Adicionando Relatorios"
-          git push origin $branch_name --force
+          git push origin HEAD:$branch_name --force
         shell: pwsh
 
       - name: Relatório de Vulnerabilidade
