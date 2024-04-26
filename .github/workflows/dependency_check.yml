@@ -17,6 +17,8 @@ env:
   ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-backend.xml
   LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-backend.xml
   LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-report-backend
+  USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+  APIKEY: ${{ secrets.NVDAPIKEY }}
 
 jobs:
   dependency-check:
@@ -59,12 +61,12 @@ jobs:
 
       - name: Executar Dependency Check CLI Scan
         run: |
-          .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ secrets.NVDAPIKEY }}"
+          .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ env.APIKEY }}"
 
       - name: Commitar Relatórios do Dependency Check
         run: |
           git fetch --all
-          git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
+          git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
