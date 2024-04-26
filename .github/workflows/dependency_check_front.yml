@@ -16,9 +16,10 @@ env:
   RESULTADO_CAMINHO: ./.cicd/dependency-check-report-frontend
   ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-frontend.xml
   LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-frontend.xml
-  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-report-frontend
+  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}/.cicd/dependency-check-report-frontend
   USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
   APIKEY: ${{ secrets.NVDAPIKEY }}
+
 jobs:
   dependency-check:
     runs-on: windows-latest
