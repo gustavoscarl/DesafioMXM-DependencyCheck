@@ -72,6 +72,7 @@ jobs:
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') { $branch_name = main } 
             else { $branch_name = ${{ github.ref }}.replace('refs/heads/', '') }
           git stash push -u
+          git checkout $branch_name
           git switch $branch_name
           git stash pop 
           git add ${{env.RESULTADO_CAMINHO}}/*
