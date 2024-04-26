@@ -65,22 +65,26 @@ jobs:
 
       - name: Commitar Relatórios do Dependency Check
         run: |
-          echo "${{env.RESULTADO_CAMINHO}}"
+          echo "./.cicd/dependency-check-report-backend"
           git fetch --all
           git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
+            git stash push -u
             git checkout main
-            git switch main } else {
-            $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
+            git switch main
+            git stash pop
+          } else {
+            $branch_name = ${{ github.ref }}.replace('refs/heads/', '')
+            git stash push -u
             git checkout $branch_name
-            git switch $branch_name }
-          git add "${{env.RESULTADO_CAMINHO}}/*"
-          git commit -m "Adicionando Relatorios
-
-          skip-checks: true"
-          git push origin HEAD --force
+            git switch $branch_name
+            git stash pop
+          }
+          git add ${{env.RESULTADO_CAMINHO}}/*
+          git commit -m "Adicionando Relatorios"
+          git push origin HEAD:main --force
         shell: pwsh
 
       - name: Relatório de Vulnerabilidade
