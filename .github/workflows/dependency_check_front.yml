@@ -65,18 +65,19 @@ jobs:
 
       - name: Commitar Relatórios do Dependency Check
         run: |
+          echo "${{env.RESULTADO_CAMINHO}}"
           git fetch --all
           git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') { $branch_name = main } 
-            else { $branch_name = ${{ github.ref }}.replace('refs/heads/', '') }
-          git stash push -u
-          git checkout $branch_name
-          git switch $branch_name
-          git stash pop 
-          git add ${{env.RESULTADO_CAMINHO}}/*
-          git commit -m "Adicionando Relatorios"
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
+            git checkout main
+            git switch main } else {
+            $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
+            git checkout $branch_name
+            git switch $branch_name }
+          git add "${{env.RESULTADO_CAMINHO}}/*"
+          git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin HEAD --force
         shell: pwsh
 
