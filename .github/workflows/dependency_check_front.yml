@@ -65,6 +65,7 @@ jobs:
 
       - name: Commitar Relatórios do Dependency Check
         run: |
+          echo "${{env.RESULTADO_CAMINHO}}"
           git fetch --all
           git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
