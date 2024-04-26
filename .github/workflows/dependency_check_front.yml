@@ -21,7 +21,8 @@ env:
   APIKEY: ${{ secrets.NVDAPIKEY }}
 
 jobs:
-  dependency-check-frontend:
+  build:
+    name: dependency-check-frontend
     runs-on: windows-latest
     steps:
       - name: Checkout Código
