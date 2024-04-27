@@ -99,7 +99,12 @@ jobs:
 
           git add "${{env.RESULTADO_CAMINHO}}/*"
           $commitResult = git commit -m "Add Dependency Check Reports"
-          git push origin $new_branch_name --set-upstream
+
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
+            git push origin $new_branch_name --force
+          } else {
+            git push origin $branch_name --force
+          }
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
