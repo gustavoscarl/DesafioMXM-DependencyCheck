@@ -39,34 +39,14 @@ Os workflows do Dependency Check são executados automaticamente neste repositó
        APIKEY: ${{ secrets.NVDAPIKEY }}
      ```
 
-3. **(Opcional) Nome da Pipeline:**
-   - Altere o valor de `name:` no arquivo `dependency_check.yml` para o nome desejado da pipeline.
-
-4. **(Opcional) Regras de Gatilhamento:**
-   - Defina as condições sob as quais o workflow será executado.
-     ```yaml
-      on:
-        push:
-          paths:
-            - "frontend/package.json"
-        pull_request:
-          branches:
-            - main
-        schedule:
-          - cron: "00 20 * * *"
-     ```
-
-5. **(Opcional) Configuração do Cache:**
-   - Modifique `key` e `restore-keys` para configurar o cache apropriado.
-
-6. **(Opcional) Configuração da Varredura:**
+3. **(Opcional) Configuração da Varredura:**
    - Configurar de acordo com suas necessidades, você pode ver todas as opções do Dependency Check CLI [aqui](https://jeremylong.github.io/DependencyCheck/dependency-check-cli/arguments.html)
  ```yaml
       - name: Executar Dependency Check CLI Scan
         run: |
           .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ env.APIKEY }}"
 ```
-6. **Regras de Pull Request:**
+4. **Regras de Pull Request:**
    - Configure as regras no repositório do GitHub (`Settings -> Branches -> Add Rule`) ou (`Settings -> Rules -> Rulesets -> New ruleset`) para que os pull requests sejam efetuados apenas após a verificação pelo workflow.
 
 

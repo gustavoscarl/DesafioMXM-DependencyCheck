@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "50 20 * * *"
+    - cron: "17 22 * * *"
 
 env:
   NOME_PROJETO: PayWiseFrontend
@@ -47,21 +47,26 @@ jobs:
         shell: pwsh
         run: |
           $branch_base = "${{ github.base_ref }}"
-          $branch_head = "${{ github.head_ref }}"
+          $branch_head = "${{ github.head_ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '')
 
           $branch = $branch_base
 
-          if ("${{ github.event_name }}" -eq "schedule"){
+          if ("${{ github.event_name }}" -eq "schedule") {
             $date = Get-Date -Format "dd-MM-yyyy"
             $new_branch_name = "schedule-$date-reports"
             $branch = $new_branch_name
+            $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml"
           }
-          if ("${{ github.event_name }}" -eq "pull_request") { 
-            $branch = $branch_head
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '') 
+            $date = Get-Date -Format "yyyy-MM-dd"
+            $new_branch_name = "$branch_name-$date-reports"
+            $branch = $new_branch_name
+            $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch_head/.cicd/dependency-check-config/suppression-frontend.xml"
           }
 
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
-          echo "LINK_SUPRESSAO=${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml" | Out-File -Append $env:GITHUB_ENV
+          echo "LINK_SUPRESSAO=$link_supressao" | Out-File -Append $env:GITHUB_ENV
           echo "LINK_RELATORIOS=${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-frontend" | Out-File -Append $env:GITHUB_ENV
         id: extrair_branch
 
@@ -105,7 +110,7 @@ jobs:
           }
 
           git add "${{env.RESULTADO_CAMINHO}}/*"
-          $commitResult = git commit -m "Add Dependency Check Reports"
+          git commit -m "Add Dependency Check Reports"
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             git push origin $new_branch_name --force
