@@ -50,6 +50,7 @@ jobs:
           $branch_head = "${{ github.head_ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '')
 
           $branch = $branch_base
+          $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml"
 
           if ("${{ github.event_name }}" -eq "schedule") {
             $date = Get-Date -Format "dd-MM-yyyy"
