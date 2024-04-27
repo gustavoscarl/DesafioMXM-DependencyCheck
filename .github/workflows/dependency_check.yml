@@ -56,8 +56,11 @@ jobs:
             $new_branch_name = "schedule-$date-reports"
             $branch = $new_branch_name
           }
-          if ("${{ github.event_name }}" -eq "pull_request") { 
-            $branch = $branch_head
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '') 
+            $date = Get-Date -Format "yyyy-MM-dd"
+            $new_branch_name = "$branch_name-$date-reports"
+            git checkout -b $new_branch_name
           }
 
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
