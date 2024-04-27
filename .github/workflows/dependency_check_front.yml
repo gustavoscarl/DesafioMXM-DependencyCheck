@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "08 20 * * *"
+    - cron: "50 20 * * *"
 
 env:
   NOME_PROJETO: PayWiseFrontend
@@ -49,16 +49,17 @@ jobs:
           $branch_base = "${{ github.base_ref }}"
           $branch_head = "${{ github.head_ref }}"
 
+          $branch = $branch_base
+
           if ("${{ github.event_name }}" -eq "schedule"){
             $date = Get-Date -Format "dd-MM-yyyy"
             $new_branch_name = "schedule-$date-reports"
             $branch = $new_branch_name
           }
-          if ($branch_base -eq "main") { 
+          if ("${{ github.event_name }}" -eq "pull_request") { 
             $branch = $branch_head
-          } else {
-            $branch = $branch_base
           }
+
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
           echo "LINK_SUPRESSAO=${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml" | Out-File -Append $env:GITHUB_ENV
           echo "LINK_RELATORIOS=${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-frontend" | Out-File -Append $env:GITHUB_ENV
