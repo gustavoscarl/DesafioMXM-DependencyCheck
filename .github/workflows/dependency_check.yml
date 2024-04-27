@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "30 10 * * *"
+    - cron: "53 18 * * *"
 
 env:
   NOME_PROJETO: PayWiseBackend
@@ -82,7 +82,7 @@ jobs:
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
 
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             $branch_name = "${{ github.head_ref }}"
           } else {
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
@@ -91,7 +91,7 @@ jobs:
           git checkout $branch_name
           git switch $branch_name
 
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             $date = Get-Date -Format "dd-MM-yyyy"
             $new_branch_name = "$branch_name-$date-reports"
             git checkout -b $new_branch_name
@@ -100,7 +100,7 @@ jobs:
           git add "${{env.RESULTADO_CAMINHO}}/*"
           $commitResult = git commit -m "Add Dependency Check Reports"
 
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             git push origin $new_branch_name --force
           } else {
             git push origin $branch_name --force
