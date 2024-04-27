@@ -43,19 +43,19 @@ jobs:
           key: nvd-owasp123-dpcheck-mxm
           restore-keys: nvd-owasp123-dpcheck-mxm
 
-      - name: Extrair o Nome da Branch
+      - name: Extrair o Nome da Branch para Links
         shell: pwsh
         run: |
           $branch_base = "${{ github.base_ref }}"
           $branch_head = "${{ github.head_ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '')
 
           $branch = $branch_base
+          $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml"
 
           if ("${{ github.event_name }}" -eq "schedule") {
             $date = Get-Date -Format "dd-MM-yyyy"
             $new_branch_name = "schedule-$date-reports"
             $branch = $new_branch_name
-            $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml"
           }
           if ("${{ github.event_name }}" -eq "pull_request") {
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '') 
