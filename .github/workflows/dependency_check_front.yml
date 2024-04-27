@@ -45,11 +45,15 @@ jobs:
       - name: Extrair o Nome da Branch
         shell: pwsh
         run: |
-          $branch = "${{ github.head_ref }}".Replace("refs/heads/", "")
-          if ($branch -eq "merge" -or $branch -eq "") { 
-            $branch = "main" 
+          $branch_base = "${{ github.base_ref }}"
+          $branch_head = "${{ github.head_ref }}"
+          if ($branch_base -eq "main") { 
+            $branch = $branch_head
+          } else {
+            $branch = $branch_base
           }
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
+          echo "LINK_SUPRESSAO=${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml" | Out-File -Append $env:GITHUB_ENV
         id: extrair_branch
 
       - name: Instalar Dependency-Check
@@ -66,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         id: relatorios-artifact
         with:
-          name: code-coverage-report
+          name: relatorios-dependencycheck
           path: ${{env.RESULTADO_CAMINHO}}/*
 
       - name: Relatório de Vulnerabilidade
