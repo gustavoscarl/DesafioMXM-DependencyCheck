@@ -91,7 +91,7 @@ jobs:
           git switch $branch_name
           git add "${{env.RESULTADO_CAMINHO}}/*"
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
-          git push origin $branch_name --force
+          git push origin $branch_name
         shell: pwsh
 
       - name: Relatório de Vulnerabilidade
