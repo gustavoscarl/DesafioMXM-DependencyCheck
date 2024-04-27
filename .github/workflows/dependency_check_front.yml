@@ -16,7 +16,6 @@ env:
   RESULTADO_CAMINHO: ./.cicd/dependency-check-report-frontend
   ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-frontend.xml
   LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-frontend.xml
-  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}/.cicd/dependency-check-report-frontend
   USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
   APIKEY: ${{ secrets.NVDAPIKEY }}
 
@@ -65,37 +64,21 @@ jobs:
 
       - name: Salvar Arquivos de Relatório
         uses: actions/upload-artifact@v4
+        id: relatorios-artifact
         with:
           name: code-coverage-report
           path: ${{env.RESULTADO_CAMINHO}}/*
 
-      - name: Commitar Relatórios do Dependency Check
-        run: |
-          git fetch --all
-          git config --local user.email "${{ env.USER_EMAIL }}"
-          git config --local user.name "gustavoscarl"
-          $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
-            git checkout main
-            git switch main } else {
-            $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
-            git checkout $branch_name
-            git switch $branch_name }
-          git add "${{env.RESULTADO_CAMINHO}}/*"
-          git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
-          git push origin HEAD --force
-        shell: pwsh
-
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
-        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "${{env.RESULTADO_CAMINHO}}/dependency-check-report.json" -linkRelatorio "${{ env.RESULTADO_CAMINHO }}"
+        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "${{env.RESULTADO_CAMINHO}}/dependency-check-report.json"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
-        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO }}" -linkRelatorio "${{ env.LINK_RELATORIOS}}"
+        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}" -linkSupressao "${{env.LINK_SUPRESSAO}}"
         shell: pwsh
 
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
         if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
-        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{ env.LINK_SUPRESSAO}}" -linkRelatorio "${{ env.LINK_RELATORIOS }}"
+        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}" -linkSupressao "${{env.LINK_SUPRESSAO}}"
         shell: pwsh
