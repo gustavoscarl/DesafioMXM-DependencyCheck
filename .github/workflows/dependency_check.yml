@@ -9,7 +9,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "40 23 * * *"
+    - cron: "52 23 * * *"
 
 env:
   NOME_PROJETO: PayWiseBackend
@@ -50,7 +50,7 @@ jobs:
           $branch_base = "${{ github.base_ref }}"
           $branch_head = "${{ github.head_ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '')
 
-          $branch = $branch_base
+          $branch = "${{ github.ref }}".replace('refs/heads/', '')
           $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-backend.xml"
 
           if ("${{ github.event_name }}" -eq "schedule") {
