@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "53 18 * * *"
+    - cron: "26 19 * * *"
 
 env:
   NOME_PROJETO: PayWiseFrontend
@@ -48,6 +48,12 @@ jobs:
         run: |
           $branch_base = "${{ github.base_ref }}"
           $branch_head = "${{ github.head_ref }}"
+
+          if (${{ github.event_name }} -eq "schedule"){
+            $date = Get-Date -Format "dd-MM-yyyy"
+            $new_branch_name = "$branch_name-$date-reports"
+            $branch = $new_branch_name
+          }
           if ($branch_base -eq "main") { 
             $branch = $branch_head
           } else {
@@ -81,19 +87,19 @@ jobs:
           git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
-
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
-            $branch_name = "${{ github.head_ref }}"
-          } else {
-            $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
-          }
+          $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
 
           git checkout $branch_name
           git switch $branch_name
 
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             $date = Get-Date -Format "dd-MM-yyyy"
             $new_branch_name = "$branch_name-$date-reports"
+            git checkout -b $new_branch_name
+          }
+          if ($env:GITHUB_EVENT_NAME -eq 'schedule') {
+            $date = Get-Date -Format "dd-MM-yyyy"
+            $new_branch_name = schedule-$date-reports"
             git checkout -b $new_branch_name
           }
 
@@ -102,7 +108,8 @@ jobs:
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             git push origin $new_branch_name --force
-          } else {
+          }
+          else {
             git push origin $branch_name --force
           }
 
