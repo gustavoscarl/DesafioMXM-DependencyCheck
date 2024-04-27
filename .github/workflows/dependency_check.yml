@@ -15,8 +15,8 @@ env:
   SCANEAR_CAMINHO: ./PayWiseBackend
   RESULTADO_CAMINHO: ./.cicd/dependency-check-report-backend
   ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-backend.xml
-  LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-frontend.xml
-  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}/.cicd/dependency-check-report-frontend
+  LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-backend.xml
+  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}/.cicd/dependency-check-report-backend
   USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
   APIKEY: ${{ secrets.NVDAPIKEY }}
 
@@ -55,19 +55,19 @@ jobs:
             $date = Get-Date -Format "dd-MM-yyyy"
             $new_branch_name = "schedule-$date-reports"
             $branch = $new_branch_name
-            $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml"
+            $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-backend.xml"
           }
           if ("${{ github.event_name }}" -eq "pull_request") {
             $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '') 
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
             $branch = $new_branch_name
-            $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch_head/.cicd/dependency-check-config/suppression-frontend.xml"
+            $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch_head/.cicd/dependency-check-config/suppression-backend.xml"
           }
 
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
           echo "LINK_SUPRESSAO=$link_supressao" | Out-File -Append $env:GITHUB_ENV
-          echo "LINK_RELATORIOS=${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-frontend" | Out-File -Append $env:GITHUB_ENV
+          echo "LINK_RELATORIOS=${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-backend" | Out-File -Append $env:GITHUB_ENV
         id: extrair_branch
 
       - name: Instalar Dependency-Check
