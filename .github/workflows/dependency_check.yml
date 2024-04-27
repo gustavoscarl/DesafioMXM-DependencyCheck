@@ -16,6 +16,7 @@ env:
   RESULTADO_CAMINHO: ./.cicd/dependency-check-report-backend
   ARQUIVO_SUPRESSAO: ./.cicd/dependency-check-config/suppression-backend.xml
   LINK_SUPRESSAO: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.cicd/dependency-check-config/suppression-frontend.xml
+  LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}/.cicd/dependency-check-report-frontend
   USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
   APIKEY: ${{ secrets.NVDAPIKEY }}
 
@@ -42,7 +43,7 @@ jobs:
           key: nvd-owasp123-dpcheck-mxm
           restore-keys: nvd-owasp123-dpcheck-mxm
 
-      - name: Extrair o Nome da Branch
+      - name: Extrair o Nome da Branch e Mudança em Caso de Merge
         shell: pwsh
         run: |
           $branch_base = "${{ github.base_ref }}"
@@ -54,6 +55,7 @@ jobs:
           }
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
           echo "LINK_SUPRESSAO=${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml" | Out-File -Append $env:GITHUB_ENV
+          echo "LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-frontend" | Out-File -Append $env:GITHUB_ENV
         id: extrair_branch
 
       - name: Instalar Dependency-Check
@@ -94,14 +96,14 @@ jobs:
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
-        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "${{env.RESULTADO_CAMINHO}}/dependency-check-report.json" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}"
+        run: .\.cicd\scripts\run_dependencycheck.ps1 -CaminhoRelatorio "${{env.RESULTADO_CAMINHO}}/dependency-check-report.json" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}" -linkRelatorios "${{env.LINK_RELATORIOS}}"
 
       - name: Falha na Build se Vulnerabilidades Altas ou Críticas Forem Encontradas
         if: ${{ steps.checar_vulnerabilidades.outputs.vulnerabilidade == 'true' }}
-        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkSupressao "${{env.LINK_SUPRESSAO}}" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}"
+        run: .\.cicd\scripts\high_critical_vulnefound.ps1 -altoNivel "${{ steps.checar_vulnerabilidades.outputs.altoNivel }}" -criticoNivel "${{ steps.checar_vulnerabilidades.outputs.criticoNivel }}" -linkSupressao "${{env.LINK_SUPRESSAO}}" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}" -linkRelatorios "${{env.LINK_RELATORIOS}}"
         shell: pwsh
 
       - name: Lidar com Vulnerabilidades de Baixo e Médio nível
         if: steps.checar_vulnerabilidades.outputs.vulnerabilidade != 'true' && steps.checar_vulnerabilidades.outputs.aviso == 'true'
-        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{env.LINK_SUPRESSAO}}" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}"
+        run: .\.cicd\scripts\low_medium_vulnefound.ps1 -baixoNivel "${{ steps.checar_vulnerabilidades.outputs.baixoNivel }}" -medioNivel "${{ steps.checar_vulnerabilidades.outputs.medioNivel }}" -linkSupressao "${{env.LINK_SUPRESSAO}}" -linkArtifact "${{ steps.relatorios-artifact.outputs.artifact-url }}" -linkRelatorios "${{env.LINK_RELATORIOS}}"
         shell: pwsh

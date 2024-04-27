@@ -132,6 +132,7 @@ if (-not $vulnerabilidade -and -not $aviso) {
   Write-Output "===================================================="
   Write-Output "Nenhuma Vulnerabilidade Encontrada! Veja https://jeremylong.github.io/DependencyCheck/general/hints.html para saber como procurar falsos negativos."
   Write-Output "Relatórios Completos para Download:  $linkArtifact"
+  Write-Output "Você também pode acessar os relatórios pelo do repositório em: $linkRelatorios"
   Write-Output "vulnerabilidade=false" >> $env:GITHUB_OUTPUT
 }
 
