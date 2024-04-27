@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "30 10 * * *"
+    - cron: "50 20 * * *"
 
 env:
   NOME_PROJETO: PayWiseBackend
@@ -43,16 +43,23 @@ jobs:
           key: nvd-owasp123-dpcheck-mxm
           restore-keys: nvd-owasp123-dpcheck-mxm
 
-      - name: Extrair o Nome da Branch e Mudança em Caso de Merge
+      - name: Extrair o Nome da Branch
         shell: pwsh
         run: |
           $branch_base = "${{ github.base_ref }}"
           $branch_head = "${{ github.head_ref }}"
-          if ($branch_base -eq "main") { 
-            $branch = $branch_head
-          } else {
-            $branch = $branch_base
+
+          $branch = $branch_base
+
+          if ("${{ github.event_name }}" -eq "schedule"){
+            $date = Get-Date -Format "dd-MM-yyyy"
+            $new_branch_name = "schedule-$date-reports"
+            $branch = $new_branch_name
           }
+          if ("${{ github.event_name }}" -eq "pull_request") { 
+            $branch = $branch_head
+          }
+
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
           echo "LINK_SUPRESSAO=${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml" | Out-File -Append $env:GITHUB_ENV
           echo "LINK_RELATORIOS=${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-frontend" | Out-File -Append $env:GITHUB_ENV
@@ -81,28 +88,29 @@ jobs:
           git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
-
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
-            $branch_name = "${{ github.head_ref }}"
-          } else {
-            $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
-          }
+          $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '')
 
           git checkout $branch_name
           git switch $branch_name
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
-            $date = Get-Date -Format "dd-MM-yyyy"
+            $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
+            git checkout -b $new_branch_name
+          }
+          if ($env:GITHUB_EVENT_NAME -eq 'schedule') {
+            $date = Get-Date -Format "yyyy-MM-dd"
+            $new_branch_name = "schedule-$date-reports"
             git checkout -b $new_branch_name
           }
 
           git add "${{env.RESULTADO_CAMINHO}}/*"
           $commitResult = git commit -m "Add Dependency Check Reports"
 
-          if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
+          if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             git push origin $new_branch_name --force
-          } else {
+          }
+          else {
             git push origin $branch_name --force
           }
 
