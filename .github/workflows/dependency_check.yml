@@ -56,6 +56,23 @@ jobs:
           echo "LINK_SUPRESSAO=${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml" | Out-File -Append $env:GITHUB_ENV
         id: extrair_branch
 
+      - name: Instalar Dependency-Check
+        if: ${{ steps.cache-nvd.outputs.cache-hit != 'true' }}
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
+          Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
+
+      - name: Executar Dependency Check CLI Scan
+        run: |
+          .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ env.APIKEY }}"
+
+      - name: Salvar Arquivos de Relatório
+        uses: actions/upload-artifact@v4
+        id: relatorios-artifact
+        with:
+          name: relatorios-dependencycheck
+          path: ${{env.RESULTADO_CAMINHO}}/*
+
       - name: Commitar Relatórios do Dependency Check
         run: |
           echo "${{env.RESULTADO_CAMINHO}}"
@@ -74,23 +91,6 @@ jobs:
           git commit -m "Add Dependency Check Reports" || echo "No changes to commit"
           git push origin $branch_name --force
         shell: pwsh
-
-      - name: Instalar Dependency-Check
-        if: ${{ steps.cache-nvd.outputs.cache-hit != 'true' }}
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/jeremylong/DependencyCheck/releases/download/v9.1.0/dependency-check-9.1.0-release.zip" -OutFile "dependency-check.zip"
-          Expand-Archive -Path "dependency-check.zip" -DestinationPath "."
-
-      - name: Executar Dependency Check CLI Scan
-        run: |
-          .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ env.APIKEY }}"
-
-      - name: Salvar Arquivos de Relatório
-        uses: actions/upload-artifact@v4
-        id: relatorios-artifact
-        with:
-          name: relatorios-dependencycheck
-          path: ${{env.RESULTADO_CAMINHO}}/*
 
       - name: Relatório de Vulnerabilidade
         id: checar_vulnerabilidades
