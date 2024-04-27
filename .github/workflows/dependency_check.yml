@@ -88,18 +88,18 @@ jobs:
           git config --local user.email "${{ env.USER_EMAIL }}"
           git config --local user.name "gustavoscarl"
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
-          $branch_name = "${{ github.ref }}".replace('refs/heads/', '')
+          $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '')
 
           git checkout $branch_name
           git switch $branch_name
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
-            $date = Get-Date -Format "dd-MM-yyyy"
+            $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
             git checkout -b $new_branch_name
           }
           if ($env:GITHUB_EVENT_NAME -eq 'schedule') {
-            $date = Get-Date -Format "dd-MM-yyyy"
+            $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "schedule-$date-reports"
             git checkout -b $new_branch_name
           }
