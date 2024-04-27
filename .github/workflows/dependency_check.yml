@@ -55,7 +55,7 @@ jobs:
           }
           echo "branch=$branch" | Out-File -Append $env:GITHUB_OUTPUT
           echo "LINK_SUPRESSAO=${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml" | Out-File -Append $env:GITHUB_ENV
-          echo "LINK_RELATORIOS: ${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-frontend" | Out-File -Append $env:GITHUB_ENV
+          echo "LINK_RELATORIOS=${{ github.server_url }}/${{ github.repository }}/tree/$branch/.cicd/dependency-check-report-frontend" | Out-File -Append $env:GITHUB_ENV
         id: extrair_branch
 
       - name: Instalar Dependency-Check
