@@ -1,6 +1,6 @@
 param (
   [string]$CaminhoRelatorio,
-  [string]$linkRelatorio
+  [string]$linkArtifact
 )
 
 # Define o arquivo JSON gerado pela Dependency Check e converte para Objeto, na variável relatorio.
@@ -131,7 +131,8 @@ foreach ($dependencia in $relatorio.dependencies) {
 if (-not $vulnerabilidade -and -not $aviso) {
   Write-Output "===================================================="
   Write-Output "Nenhuma Vulnerabilidade Encontrada! Veja https://jeremylong.github.io/DependencyCheck/general/hints.html para saber como procurar falsos negativos."
-  Write-Output "Relatório completo em HTML:  $linkRelatorio"
+  Write-Output "Relatórios Completos para Download:  $linkArtifact"
+  Write-Output "Você também pode acessar os relatórios pelo do repositório em: $linkRelatorios"
   Write-Output "vulnerabilidade=false" >> $env:GITHUB_OUTPUT
 }
 
