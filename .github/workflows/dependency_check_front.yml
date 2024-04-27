@@ -1,13 +1,13 @@
 name: Dependency Check no Frontend
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "frontend/package.json"
   pull_request:
     branches:
       - main
-  workflow_dispatch:
   schedule:
     - cron: "58 22 * * *"
 

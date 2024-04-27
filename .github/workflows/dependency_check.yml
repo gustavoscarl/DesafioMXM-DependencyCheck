@@ -1,13 +1,13 @@
 name: Dependency Check no Backend
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "PayWiseBackend/PayWiseBackend.csproj"
   pull_request:
     branches:
       - main
-  workflow_dispatch:
   schedule:
     - cron: "58 22 * * *"
 
