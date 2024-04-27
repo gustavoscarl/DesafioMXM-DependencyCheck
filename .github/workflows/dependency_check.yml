@@ -58,6 +58,7 @@ jobs:
             $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-frontend.xml"
           }
           if ("${{ github.event_name }}" -eq "pull_request") {
+            $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '') 
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
             $branch = $new_branch_name
