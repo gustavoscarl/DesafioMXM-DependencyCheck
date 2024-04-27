@@ -1,4 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: Azure.Core.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/Azure\.Core@.*$</packageUrl>
+   <cve>CVE-2023-36052</cve>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: Microsoft.CodeAnalysis.Razor.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/Microsoft\.CodeAnalysis\.Razor@.*$</packageUrl>
+   <cpe>cpe:/a:microsoft:.net_core</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: Microsoft.CodeAnalysis.Razor.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/Microsoft\.CodeAnalysis\.Razor@.*$</packageUrl>
+   <cpe>cpe:/a:microsoft:asp.net</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: MySqlConnector.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/MySqlConnector@.*$</packageUrl>
+   <cpe>cpe:/a:mysql:mysql</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: MySqlConnector.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/MySqlConnector@.*$</packageUrl>
+   <cpe>cpe:/a:www-sql_project:www-sql</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: Newtonsoft.Json.Bson.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/Newtonsoft\.Json\.Bson@.*$</packageUrl>
+   <cpe>cpe:/a:newtonsoft:json.net</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: SQLitePCLRaw.core.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/SQLitePCLRaw\.core@.*$</packageUrl>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: SQLitePCLRaw.provider.e_sqlite3.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/SQLitePCLRaw\.provider\.e_sqlite3@.*$</packageUrl>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: e_sqlite3.dll
+   ]]></notes>
+   <sha1>24e8d09c68878dc199ba9b6a4cb79140e9ab07b2</sha1>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: e_sqlite3.dll
+   ]]></notes>
+   <sha1>a8577c057f01e2f9c9b60bfff3db7b33789a427f</sha1>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: e_sqlite3.dll
+   ]]></notes>
+   <sha1>5a035170e758c13913a41cc427de556485c5ef5d</sha1>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: e_sqlite3.dll
+   ]]></notes>
+   <sha1>20d995c43cc5d163df5e622e894c04cda45165bd</sha1>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
+<suppress until="2024-05-07Z">
+   <notes><![CDATA[
+   file name: SQLitePCLRaw.batteries_v2.dll
+   ]]></notes>
+   <packageUrl regex="true">^pkg:generic/SQLitePCLRaw\.batteries_v2@.*$</packageUrl>
+   <cpe>cpe:/a:sqlite:sqlite</cpe>
+</suppress>
 </suppressions>
