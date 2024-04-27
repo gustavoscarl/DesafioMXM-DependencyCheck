@@ -63,6 +63,12 @@ jobs:
         run: |
           .\dependency-check\bin\dependency-check.bat --project "${{ env.NOME_PROJETO }}" --scan "${{ env.SCANEAR_CAMINHO }}" --out "${{ env.RESULTADO_CAMINHO }}" --format "HTML" --format "JSON" --suppression "${{ env.ARQUIVO_SUPRESSAO }}" --nvdApiKey="${{ env.APIKEY }}"
 
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: ${{env.RESULTADO_CAMINHO}}/*
+
       - name: Commitar Relatórios do Dependency Check
         run: |
           git fetch --all
