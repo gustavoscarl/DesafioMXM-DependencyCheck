@@ -2,7 +2,7 @@ param (
   [string]$baixoNivel,
   [string]$medioNivel,
   [string]$linkSupressao,
-  [string]$linkRelatorios
+  [string]$linkArtifact
 )
 
 Write-Warning "Vulnerabilidades Baixas ou Médias encontradas, por favor, tenha cuidado."
