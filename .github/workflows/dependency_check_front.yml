@@ -97,20 +97,21 @@ jobs:
           $env:GITHUB_EVENT_NAME = "${{ github.event_name }}"
           $branch_name = "${{ github.ref }}".replace('refs/heads/', '').replace('refs/pull/', 'pr-').replace('/merge', '')
 
-
           git checkout $branch_name
           git switch $branch_name
-          git pull origin $branch_name
+          git pull origin $branch_name --no-commit
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
             git checkout -b $new_branch_name --ours
+            git merge origin/$branch_name --strategy-option=ours
           }
           if ($env:GITHUB_EVENT_NAME -eq 'schedule') {
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "schedule-$date-reports"
             git checkout -b $new_branch_name --ours
+            git merge origin/$branch_name --strategy-option=ours
           }
 
           git add "${{env.RESULTADO_CAMINHO}}/*"
