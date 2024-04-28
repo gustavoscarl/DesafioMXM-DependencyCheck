@@ -4,12 +4,13 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "PayWiseBackend/PayWiseBackend.csproj"
+      - "frontend/package.json"
   pull_request:
     branches:
       - main
   schedule:
-    - cron: "58 22 * * *"
+    - cron: "01 01 * * *"
+
 
 env:
   NOME_PROJETO: PayWiseBackend
