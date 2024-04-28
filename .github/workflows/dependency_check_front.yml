@@ -114,7 +114,7 @@ jobs:
           git commit -m "Add Dependency Check Reports"
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
-            git pull origin $new_branch_name --allow-unrelated-histories --ours
+            git pull origin $new_branch_name --allow-unrelated-histories
             git push origin $new_branch_name
           }
           else {
