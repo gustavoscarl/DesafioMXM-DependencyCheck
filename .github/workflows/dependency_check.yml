@@ -3,7 +3,7 @@ name: Dependency Check no Backend
 on:
   push:
     paths:
-      - "frontend/package.json"
+      - "PayWiseBackend/**/*.csproj"
   pull_request:
     branches:
       - main
