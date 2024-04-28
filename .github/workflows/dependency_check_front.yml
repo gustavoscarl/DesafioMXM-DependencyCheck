@@ -1,7 +1,6 @@
 name: Dependency Check no Frontend
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - "frontend/package.json"
@@ -9,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "58 22 * * *"
+    - cron: "00 10 * * *"
 
 env:
   NOME_PROJETO: PayWiseFrontend
