@@ -102,12 +102,12 @@ jobs:
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
-            git checkout -b $new_branch_name
+            git checkout -b $new_branch_name --ours
           }
           if ($env:GITHUB_EVENT_NAME -eq 'schedule') {
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "schedule-$date-reports"
-            git checkout -b $new_branch_name
+            git checkout -b $new_branch_name --ours
           }
 
           git add "${{env.RESULTADO_CAMINHO}}/*"
