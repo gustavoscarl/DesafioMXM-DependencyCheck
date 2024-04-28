@@ -103,7 +103,6 @@ jobs:
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
             git checkout -b $new_branch_name
-            git pull origin $new_branch_name --allow-unrelated-histories
           }
           if ($env:GITHUB_EVENT_NAME -eq 'schedule') {
             $date = Get-Date -Format "yyyy-MM-dd"
@@ -115,6 +114,7 @@ jobs:
           git commit -m "Add Dependency Check Reports"
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
+            git pull origin $new_branch_name
             git push origin $new_branch_name
           }
           else {
