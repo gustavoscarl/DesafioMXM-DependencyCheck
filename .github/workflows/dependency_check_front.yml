@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "10 00 * * *"
+    - cron: "58 00 * * *"
 
 env:
   NOME_PROJETO: PayWiseFrontend
