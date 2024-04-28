@@ -117,10 +117,10 @@ jobs:
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             git pull origin $new_branch_name --allow-unrelated-histories
-            git push origin $new_branch_name --force
+            git push origin $new_branch_name --force-with-lease
           }
           else {
-            git push origin $branch_name
+            git push origin $branch_name --force-with-lease
           }
 
       - name: Relatório de Vulnerabilidade
