@@ -9,7 +9,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "01 01 * * *"
+    - cron: "00 10 * * *"
 
 
 env:
