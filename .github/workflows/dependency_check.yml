@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "05 17 * * *"
+    - cron: "37 17 * * *"
 
 env:
   NOME_PROJETO: PayWiseBackend
@@ -53,7 +53,7 @@ jobs:
           $link_supressao = "${{ github.server_url }}/${{ github.repository }}/blob/$branch/.cicd/dependency-check-config/suppression-backend.xml"
 
           if ("${{ github.event_name }}" -eq "schedule") {
-            $date = Get-Date -Format "dd-MM-yyyy"
+            $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "schedule-$date-reports"
             $branch = $new_branch_name
           }
