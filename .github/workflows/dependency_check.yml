@@ -99,19 +99,17 @@ jobs:
 
           git checkout $branch_name
           git switch $branch_name
-          git pull origin $branch_name --no-commit
+          git pull origin $branch_name
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request') {
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "$branch_name-$date-reports"
-            git checkout -b $new_branch_name --ours
-            git merge origin/$branch_name --strategy-option=ours
+            git checkout -b $new_branch_name
           }
           if ($env:GITHUB_EVENT_NAME -eq 'schedule') {
             $date = Get-Date -Format "yyyy-MM-dd"
             $new_branch_name = "schedule-$date-reports"
-            git checkout -b $new_branch_name --ours
-            git merge origin/$branch_name --strategy-option=ours
+            git checkout -b $new_branch_name
           }
 
           git add "${{env.RESULTADO_CAMINHO}}/*"
@@ -119,7 +117,7 @@ jobs:
 
           if ($env:GITHUB_EVENT_NAME -eq 'pull_request' -or $env:GITHUB_EVENT_NAME -eq 'schedule') {
             git pull origin $new_branch_name --allow-unrelated-histories
-            git push origin $new_branch_name
+            git push origin $new_branch_name --force
           }
           else {
             git push origin $branch_name
