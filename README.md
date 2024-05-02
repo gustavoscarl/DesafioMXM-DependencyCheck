@@ -17,6 +17,7 @@ Os workflows do Dependency Check são executados automaticamente neste repositó
 
 - Criar uma [NVD API Key](https://nvd.nist.gov/developers/request-an-api-key).
 - Estrutura de pastas necessária: Copie a pasta `.cicd` para a raiz do seu repositório com as subpastas `/dependency-check-report`, `/dependency-check-config` e `/scripts`.
+- OPCIONAL: Você pode apagar os arquivos dentro de `/dependency-check-report` (JSON e HTML).
 
 ### Configuração
 
